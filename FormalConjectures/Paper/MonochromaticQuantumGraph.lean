@@ -16,6 +16,63 @@ limitations under the License.
 
 import FormalConjectures.Util.ProblemImports
 
+/-!
+# Monochromatic quantum graphs (inherited vertex colorings)
+
+This file studies the existence of *monochromatic quantum graphs*: edge-coloured, edge-weighted
+complete graphs whose perfect matchings induce vertex colourings, with the property that
+
+- every **non-monochromatic** inherited vertex colouring has total weight `0`, while
+- each of the `D` **monochromatic** colourings has total weight `1`.
+
+In the quantum-optics motivation, such a construction corresponds to generating high-dimensional
+multipartite GHZ-type states using probabilistic pair sources and linear optics (without additional
+resources), where interference patterns can be expressed as weighted sums over perfect matchings.
+
+## Main questions (informal)
+
+- For `N = 4` and `D ≥ 4`, does there exist such a graph/weighting?
+- For even `N ≥ 6` and `D ≥ 3`, does there exist such a graph/weighting?
+
+## Formalisation sketch
+
+A quantum graph with `N` vertices and `D` colours can be encoded by a weight function
+`W : EdgeN N D α → α` (for a coefficient domain `α`).
+
+For each assignment of vertex indices `ι : V N → Fin D`, we define a perfect-matching sum
+`pmSumN N D W ι` (a sum over perfect matchings, where each matching contributes the product of the
+corresponding edge weights determined by `ι`). The equation system `EqSystemN N D W` requires
+
+`pmSumN N D W ι = 1` iff `ι` is constant (all entries equal), and `0` otherwise.
+
+The open conjectures in this file ask for non-existence/existence of such `W` over various
+coefficient domains (e.g. `ℂ`, `ℝ`, `ℤ`, and restricted integer weights).
+
+## References
+
+* [Krenn2017] M. Krenn, X. Gu, A. Zeilinger,
+  “Quantum Experiments and Graphs: Multiparty States as Coherent Superpositions of Perfect Matchings”,
+  *Physical Review Letters* 119(24), 240403 (2017).
+
+* [MO2018] “Vertex coloring inherited from perfect matchings (motivated by quantum physics)”,
+  MathOverflow question 311325.
+
+* [Gu2019] X. Gu, M. Erhard, A. Zeilinger, M. Krenn,
+  “Quantum experiments and graphs II: Quantum interference, computation, and state generation”,
+  *PNAS* 116(10), 4147–4155 (2019).
+
+* [Krenn2019] M. Krenn, X. Gu, U. Soltész,
+  “Questions on the Structure of Perfect Matchings inspired by Quantum Physics”,
+  Proc. 2nd Croatian Combinatorial Days, 57–70 (2019), arXiv:1902.06023.
+
+* [Chandran2022] N. Chandran, S. Gajjala,
+  “Edge-coloured graphs with only monochromatic perfect matchings and their connection to quantum physics”,
+  arXiv:2202.05562 (2022).
+
+* [Chandran2024] N. Chandran, S. Gajjala, S. Illickan, M. Krenn,
+  “Krenn–Gu conjecture for sparse graphs”, MFCS 2024, arXiv:2407.00303.
+-/
+
 open scoped Matrix
 open scoped NNReal
 
@@ -252,8 +309,17 @@ end N6_D2
 Informal proof (“Bogdanov's lemma”): see
 https://mathoverflow.net/a/311021/531914
 
-We record it as a `research solved` statement over `ℝ≥0`, without formalizing the proof here.
+We record it as `research solved` statements over `ℝ≥0`, without formalizing the proof here.
 -/
+
+/-- Bogdanov: for `N = 4` and all `D ≥ 4`, no solution exists over `ℝ≥0`. -/
+@[category research solved, AMS 05 14 81]
+theorem eqSystem4_no_solution_nnreal_ge4 :
+    ∀ D : Nat, D ≥ 4 →
+      ¬ ∃ W : WeightsN 4 D ℝ≥0, EqSystemN (N := 4) (D := D) W := by
+  sorry
+
+/-- Bogdanov: for all even `N ≥ 6` and `D ≥ 3`, no solution exists over `ℝ≥0`. -/
 @[category research solved, AMS 05 14 81]
 theorem eqSystem_no_solution_nnreal_even_ge6_ge3 :
     ∀ N D : Nat,
@@ -262,8 +328,21 @@ theorem eqSystem_no_solution_nnreal_even_ge6_ge3 :
   sorry
 
 /-!
-# Open conjectures (formal-conjectures style)
+# Open conjectures
+
+We state the same family of “no-solution” conjectures for multiple coefficient domains:
+
+* `ℂ` (complex)
+* `ℝ` (real)
+* `ℤ` (integers)
+* `{-1,0,1} ⊆ ℤ` (integer weights restricted pointwise to -1/0/1)
+
+All “general” conjectures are restricted to even `N`.
 -/
+
+-- =========================
+-- Open conjectures over ℂ
+-- =========================
 
 @[category research open, AMS 05 14 81]
 theorem eqSystem4_no_solution_d4 :
@@ -294,8 +373,130 @@ theorem eqSystem6_no_solution_ge3 :
 @[category research open, AMS 05 14 81]
 theorem eqSystem_no_solution_ge6_ge3 :
     answer(sorry) ↔
-      ∀ N D : Nat, N ≥ 6 → D ≥ 3 →
+      ∀ N D : Nat, N ≥ 6 → Even N → D ≥ 3 →
         ¬ ∃ W : WeightsN N D ℂ, EqSystemN (N := N) (D := D) W := by
+  sorry
+
+-- =========================
+-- Open conjectures over ℝ
+-- =========================
+
+@[category research open, AMS 05 14 81]
+theorem eqSystem4_no_solution_d4_real :
+    answer(sorry) ↔
+      ¬ ∃ W : WeightsN 4 4 ℝ, EqSystemN (N := 4) (D := 4) W := by
+  sorry
+
+@[category research open, AMS 05 14 81]
+theorem eqSystem4_no_solution_ge4_real :
+    answer(sorry) ↔
+      ∀ D : Nat, D ≥ 4 →
+        ¬ ∃ W : WeightsN 4 D ℝ, EqSystemN (N := 4) (D := D) W := by
+  sorry
+
+@[category research open, AMS 05 14 81]
+theorem eqSystem6_no_solution_d3_real :
+    answer(sorry) ↔
+      ¬ ∃ W : WeightsN 6 3 ℝ, EqSystemN (N := 6) (D := 3) W := by
+  sorry
+
+@[category research open, AMS 05 14 81]
+theorem eqSystem6_no_solution_ge3_real :
+    answer(sorry) ↔
+      ∀ D : Nat, D ≥ 3 →
+        ¬ ∃ W : WeightsN 6 D ℝ, EqSystemN (N := 6) (D := D) W := by
+  sorry
+
+@[category research open, AMS 05 14 81]
+theorem eqSystem_no_solution_ge6_ge3_real :
+    answer(sorry) ↔
+      ∀ N D : Nat, N ≥ 6 → Even N → D ≥ 3 →
+        ¬ ∃ W : WeightsN N D ℝ, EqSystemN (N := N) (D := D) W := by
+  sorry
+
+-- =========================
+-- Open conjectures over ℤ
+-- =========================
+
+@[category research open, AMS 05 14 81]
+theorem eqSystem4_no_solution_d4_int :
+    answer(sorry) ↔
+      ¬ ∃ W : WeightsN 4 4 ℤ, EqSystemN (N := 4) (D := 4) W := by
+  sorry
+
+@[category research open, AMS 05 14 81]
+theorem eqSystem4_no_solution_ge4_int :
+    answer(sorry) ↔
+      ∀ D : Nat, D ≥ 4 →
+        ¬ ∃ W : WeightsN 4 D ℤ, EqSystemN (N := 4) (D := D) W := by
+  sorry
+
+@[category research open, AMS 05 14 81]
+theorem eqSystem6_no_solution_d3_int :
+    answer(sorry) ↔
+      ¬ ∃ W : WeightsN 6 3 ℤ, EqSystemN (N := 6) (D := 3) W := by
+  sorry
+
+@[category research open, AMS 05 14 81]
+theorem eqSystem6_no_solution_ge3_int :
+    answer(sorry) ↔
+      ∀ D : Nat, D ≥ 3 →
+        ¬ ∃ W : WeightsN 6 D ℤ, EqSystemN (N := 6) (D := D) W := by
+  sorry
+
+@[category research open, AMS 05 14 81]
+theorem eqSystem_no_solution_ge6_ge3_int :
+    answer(sorry) ↔
+      ∀ N D : Nat, N ≥ 6 → Even N → D ≥ 3 →
+        ¬ ∃ W : WeightsN N D ℤ, EqSystemN (N := N) (D := D) W := by
+  sorry
+
+-- ==========================================
+-- Open conjectures over {-1,0,1} ⊆ ℤ
+-- (implemented as ℤ-valued weights with a pointwise restriction)
+-- ==========================================
+
+@[category research open, AMS 05 14 81]
+theorem eqSystem4_no_solution_d4_trinary_int :
+    answer(sorry) ↔
+      ¬ ∃ W : WeightsN 4 4 ℤ,
+          (∀ e, W e = (-1 : ℤ) ∨ W e = 0 ∨ W e = 1) ∧
+            EqSystemN (N := 4) (D := 4) W := by
+  sorry
+
+@[category research open, AMS 05 14 81]
+theorem eqSystem4_no_solution_ge4_trinary_int :
+    answer(sorry) ↔
+      ∀ D : Nat, D ≥ 4 →
+        ¬ ∃ W : WeightsN 4 D ℤ,
+            (∀ e, W e = (-1 : ℤ) ∨ W e = 0 ∨ W e = 1) ∧
+              EqSystemN (N := 4) (D := D) W := by
+  sorry
+
+@[category research open, AMS 05 14 81]
+theorem eqSystem6_no_solution_d3_trinary_int :
+    answer(sorry) ↔
+      ¬ ∃ W : WeightsN 6 3 ℤ,
+          (∀ e, W e = (-1 : ℤ) ∨ W e = 0 ∨ W e = 1) ∧
+            EqSystemN (N := 6) (D := 3) W := by
+  sorry
+
+@[category research open, AMS 05 14 81]
+theorem eqSystem6_no_solution_ge3_trinary_int :
+    answer(sorry) ↔
+      ∀ D : Nat, D ≥ 3 →
+        ¬ ∃ W : WeightsN 6 D ℤ,
+            (∀ e, W e = (-1 : ℤ) ∨ W e = 0 ∨ W e = 1) ∧
+              EqSystemN (N := 6) (D := D) W := by
+  sorry
+
+@[category research open, AMS 05 14 81]
+theorem eqSystem_no_solution_ge6_ge3_trinary_int :
+    answer(sorry) ↔
+      ∀ N D : Nat, N ≥ 6 → Even N → D ≥ 3 →
+        ¬ ∃ W : WeightsN N D ℤ,
+            (∀ e, W e = (-1 : ℤ) ∨ W e = 0 ∨ W e = 1) ∧
+              EqSystemN (N := N) (D := D) W := by
   sorry
 
 end PM
