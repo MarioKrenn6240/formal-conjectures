@@ -51,26 +51,25 @@ coefficient domains (e.g. `ℂ`, `ℝ`, `ℤ`, and restricted integer weights).
 ## References
 
 * [Krenn2017] M. Krenn, X. Gu, A. Zeilinger,
-  “Quantum Experiments and Graphs: Multiparty States as Coherent Superpositions of Perfect Matchings”,
+  "Quantum Experiments and Graphs: Multiparty States as Coherent Superpositions of Perfect Matchings",
   *Physical Review Letters* 119(24), 240403 (2017).
 
-* [MO2018] “Vertex coloring inherited from perfect matchings (motivated by quantum physics)”,
+* [MO2018] [Vertex coloring inherited from perfect matchings (motivated by quantum physics)](https://mathoverflow.net/questions/311325),
   MathOverflow question 311325.
 
 * [Gu2019] X. Gu, M. Erhard, A. Zeilinger, M. Krenn,
-  “Quantum experiments and graphs II: Quantum interference, computation, and state generation”,
+  "Quantum experiments and graphs II: Quantum interference, computation, and state generation",
   *PNAS* 116(10), 4147–4155 (2019).
 
-* [Krenn2019] M. Krenn, X. Gu, U. Soltész,
-  “Questions on the Structure of Perfect Matchings inspired by Quantum Physics”,
-  Proc. 2nd Croatian Combinatorial Days, 57–70 (2019), arXiv:1902.06023.
+* [Krenn2019] [Questions on the Structure of Perfect Matchings inspired by Quantum Physics](https://arxiv.org/abs/1902.06023)
+  by *M. Krenn, X. Gu, U. Soltész*,
+  Proc. 2nd Croatian Combinatorial Days, 57–70 (2019).
 
-* [Chandran2022] N. Chandran, S. Gajjala,
-  “Edge-coloured graphs with only monochromatic perfect matchings and their connection to quantum physics”,
-  arXiv:2202.05562 (2022).
+* [Chandran2022] [Edge-coloured graphs with only monochromatic perfect matchings and their connection to quantum physics](https://arxiv.org/abs/2202.05562)
+  by *N. Chandran, S. Gajjala* (2022).
 
-* [Chandran2024] N. Chandran, S. Gajjala, S. Illickan, M. Krenn,
-  “Krenn–Gu conjecture for sparse graphs”, MFCS 2024, arXiv:2407.00303.
+* [Chandran2024] [Krenn–Gu conjecture for sparse graphs](https://arxiv.org/abs/2407.00303)
+  by *N. Chandran, S. Gajjala, S. Illickan, M. Krenn*, MFCS 2024.
 -/
 
 open scoped Matrix
@@ -78,10 +77,10 @@ open scoped NNReal
 
 namespace MonochromaticQuantumGraph
 
-/-- Vertices of `K_N`. -/
+/-- Vertices of $K_N$. -/
 abbrev V (N : Nat) := Fin N
 
-/-- Edge label for `K_N` with endpoint indices in `Fin D`.
+/-- Edge label for $K_N$ with endpoint indices in `Fin D`.
 
 We *intend* to build edges only with `u < v` (so undirected edges are represented once),
 and our enumeration always pairs the first vertex in an ordered list with a later vertex.
@@ -100,16 +99,16 @@ abbrev WeightsN (N D : Nat) (α : Type) := EdgeN N D → α
 def mkEdge {N D : Nat} (u v : V N) (i j : Fin D) : EdgeN N D :=
   ⟨u, v, i, j⟩
 
-/-- Ordered vertex list `[0,1,2,...,N-1]`. -/
+/-- Ordered vertex list $[0, 1, \ldots, N-1]$. -/
 def vertices : (N : Nat) → List (V N)
   | 0 => []
   | N + 1 =>
       (0 : Fin (N + 1)) :: (vertices N).map Fin.succ
 
-/-!
+/-
 ## `allEqual`: "all indices are equal"
 
-We package the property “all indices `ι v` are equal” as a chain condition along a vertex list.
+We package the property "all indices `ι v` are equal" as a chain condition along a vertex list.
 
 Concretely, `allEqualList ι L` means that the relation `ι v = ι w` holds between adjacent elements
 of `L`. We implement this with `List.IsChain`, which is convenient for later reasoning and provides
@@ -136,7 +135,7 @@ instance {N D : Nat} (ι : V N → Fin D) : Decidable (allEqual ι) := by
   unfold allEqual
   infer_instance
 
-/-!
+/-
 ## Perfect matching sum, general `N`
 
 Fix a semiring `α`, a weight function `W : WeightsN N D α`, and an index assignment
@@ -180,27 +179,27 @@ def pmSumList {α : Type} [Semiring α] {N D : Nat}
     (W : WeightsN N D α) (ι : V N → Fin D) (L : List (V N)) : α :=
   pmSumListAux W ι L.length L
 
-/-- The perfect-matching sum for `K_N`: use the canonical ordered vertex list `vertices N`. -/
+/-- The perfect-matching sum for $K_N$: use the canonical ordered vertex list `vertices N`. -/
 def pmSumN {α : Type} [Semiring α] (N D : Nat)
     (W : WeightsN N D α) (ι : V N → Fin D) : α :=
   pmSumList W ι (vertices N)
 
-/-- The monochromatic-quantum-graph equation system for `K_N`.
+/-- The monochromatic quantum graph equation system for $K_N$.
 
-For every index assignment `ι : V N → Fin D`, the perfect-matching sum equals `1` if `ι` is constant
-(monochromatic inherited vertex colouring), and equals `0` otherwise. -/
+For every index assignment $\iota : V_N \to \mathrm{Fin}\, D$, the perfect-matching sum equals $1$
+if $\iota$ is constant (monochromatic inherited vertex colouring), and equals $0$ otherwise. -/
 def EqSystemN {α : Type} [Semiring α] (N D : Nat) (W : WeightsN N D α) : Prop :=
   ∀ ι : V N → Fin D,
     pmSumN N D W ι =
       (if allEqual ι then (1 : α) else (0 : α))
 
-/-!
+/-
 # Witnesses & theorems (sanity checks)
 
 These proofs are computation-heavy (`fin_cases` + `simp`), so we increase the heartbeat limit locally.
 -/
 
-/-! ## N = 4, D = 2 (works over any semiring α): witness & proof -/
+/- ## N = 4, D = 2 (works over any semiring α): witness & proof -/
 section N4_D2
 variable {α : Type} [Semiring α]
 
@@ -238,7 +237,7 @@ theorem eqSystem4_has_solution_d2 :
 
 end N4_D2
 
-/-! ## N = 4, D = 3 over ℂ: witness & proof -/
+/- ## N = 4, D = 3 over ℂ: witness & proof -/
 
 def Witness4_d3 : WeightsN 4 3 ℂ :=
   fun e =>
@@ -274,7 +273,7 @@ theorem eqSystem4_has_solution_d3 :
   rw [hι]
   exact h (ι 0) (ι 1) (ι 2) (ι 3)
 
-/-! ## N = 6, D = 2 (works over any semiring α): witness & proof -/
+/- ## N = 6, D = 2 (works over any semiring α): witness & proof -/
 section N6_D2
 variable {α : Type} [Semiring α]
 
@@ -315,23 +314,23 @@ theorem eqSystem6_has_solution_d2 :
 
 end N6_D2
 
-/-!
+/-
 # Known obstruction for nonnegative real weights (Bogdanov)
 
-Informal proof (“Bogdanov's lemma”): see
-https://mathoverflow.net/a/311021/531914
+Informal proof ("Bogdanov's lemma"): see
+[MathOverflow answer](https://mathoverflow.net/a/311021/531914).
 
 We record it as `research solved` statements over `ℝ≥0`, without formalizing the proof here.
 -/
 
-/-- Bogdanov: for `N = 4` and all `D ≥ 4`, no solution exists over `ℝ≥0`. -/
+/-- Bogdanov: for $N = 4$ and all $D \geq 4$, no solution exists over $\mathbb{R}_{\geq 0}$. -/
 @[category research solved, AMS 05 14 81]
 theorem eqSystem4_no_solution_nnreal_ge4 :
     ∀ D : Nat, D ≥ 4 →
       ¬ ∃ W : WeightsN 4 D ℝ≥0, EqSystemN 4 D W := by
   sorry
 
-/-- Bogdanov: for all even `N ≥ 6` and `D ≥ 3`, no solution exists over `ℝ≥0`. -/
+/-- Bogdanov: for all even $N \geq 6$ and $D \geq 3$, no solution exists over $\mathbb{R}_{\geq 0}$. -/
 @[category research solved, AMS 05 14 81]
 theorem eqSystem_no_solution_nnreal_even_ge6_ge3 :
     ∀ N D : Nat,
@@ -339,29 +338,31 @@ theorem eqSystem_no_solution_nnreal_even_ge6_ge3 :
         ¬ ∃ W : WeightsN N D ℝ≥0, EqSystemN N D W := by
   sorry
 
-/-!
+/-
 # Open conjectures
 
-We state the same family of “no-solution” conjectures for multiple coefficient domains:
+We state the same family of "no-solution" conjectures for multiple coefficient domains:
 
 * `ℂ` (complex)
 * `ℝ` (real)
 * `ℤ` (integers)
 * `{-1,0,1} ⊆ ℤ` (integer weights restricted pointwise to -1/0/1)
 
-All “general” conjectures are restricted to even `N`.
+All "general" conjectures are restricted to even `N`.
 -/
 
--- =========================
--- Open conjectures over ℂ
--- =========================
+/- ## Open conjectures over ℂ -/
 
+/-- For $N = 4$ and $D = 4$, does there exist no solution to the monochromatic quantum graph
+equation system over $\mathbb{C}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem4_no_solution_d4 :
     answer(sorry) ↔
       ¬ ∃ W : WeightsN 4 4 ℂ, EqSystemN 4 4 W := by
   sorry
 
+/-- For $N = 4$ and all $D \geq 4$, does there exist no solution to the monochromatic quantum graph
+equation system over $\mathbb{C}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem4_no_solution_ge4 :
     answer(sorry) ↔
@@ -369,12 +370,16 @@ theorem eqSystem4_no_solution_ge4 :
         ¬ ∃ W : WeightsN 4 D ℂ, EqSystemN 4 D W := by
   sorry
 
+/-- For $N = 6$ and $D = 3$, does there exist no solution to the monochromatic quantum graph
+equation system over $\mathbb{C}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem6_no_solution_d3 :
     answer(sorry) ↔
       ¬ ∃ W : WeightsN 6 3 ℂ, EqSystemN 6 3 W := by
   sorry
 
+/-- For $N = 6$ and all $D \geq 3$, does there exist no solution to the monochromatic quantum graph
+equation system over $\mathbb{C}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem6_no_solution_ge3 :
     answer(sorry) ↔
@@ -382,6 +387,8 @@ theorem eqSystem6_no_solution_ge3 :
         ¬ ∃ W : WeightsN 6 D ℂ, EqSystemN 6 D W := by
   sorry
 
+/-- For all even $N \geq 6$ and $D \geq 3$, does there exist no solution to the monochromatic
+quantum graph equation system over $\mathbb{C}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem_no_solution_ge6_ge3 :
     answer(sorry) ↔
@@ -389,16 +396,18 @@ theorem eqSystem_no_solution_ge6_ge3 :
         ¬ ∃ W : WeightsN N D ℂ, EqSystemN N D W := by
   sorry
 
--- =========================
--- Open conjectures over ℝ
--- =========================
+/- ## Open conjectures over ℝ -/
 
+/-- For $N = 4$ and $D = 4$, does there exist no solution to the monochromatic quantum graph
+equation system over $\mathbb{R}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem4_no_solution_d4_real :
     answer(sorry) ↔
       ¬ ∃ W : WeightsN 4 4 ℝ, EqSystemN 4 4 W := by
   sorry
 
+/-- For $N = 4$ and all $D \geq 4$, does there exist no solution to the monochromatic quantum graph
+equation system over $\mathbb{R}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem4_no_solution_ge4_real :
     answer(sorry) ↔
@@ -406,12 +415,16 @@ theorem eqSystem4_no_solution_ge4_real :
         ¬ ∃ W : WeightsN 4 D ℝ, EqSystemN 4 D W := by
   sorry
 
+/-- For $N = 6$ and $D = 3$, does there exist no solution to the monochromatic quantum graph
+equation system over $\mathbb{R}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem6_no_solution_d3_real :
     answer(sorry) ↔
       ¬ ∃ W : WeightsN 6 3 ℝ, EqSystemN 6 3 W := by
   sorry
 
+/-- For $N = 6$ and all $D \geq 3$, does there exist no solution to the monochromatic quantum graph
+equation system over $\mathbb{R}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem6_no_solution_ge3_real :
     answer(sorry) ↔
@@ -419,6 +432,8 @@ theorem eqSystem6_no_solution_ge3_real :
         ¬ ∃ W : WeightsN 6 D ℝ, EqSystemN 6 D W := by
   sorry
 
+/-- For all even $N \geq 6$ and $D \geq 3$, does there exist no solution to the monochromatic
+quantum graph equation system over $\mathbb{R}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem_no_solution_ge6_ge3_real :
     answer(sorry) ↔
@@ -426,16 +441,18 @@ theorem eqSystem_no_solution_ge6_ge3_real :
         ¬ ∃ W : WeightsN N D ℝ, EqSystemN N D W := by
   sorry
 
--- =========================
--- Open conjectures over ℤ
--- =========================
+/- ## Open conjectures over ℤ -/
 
+/-- For $N = 4$ and $D = 4$, does there exist no solution to the monochromatic quantum graph
+equation system over $\mathbb{Z}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem4_no_solution_d4_int :
     answer(sorry) ↔
       ¬ ∃ W : WeightsN 4 4 ℤ, EqSystemN 4 4 W := by
   sorry
 
+/-- For $N = 4$ and all $D \geq 4$, does there exist no solution to the monochromatic quantum graph
+equation system over $\mathbb{Z}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem4_no_solution_ge4_int :
     answer(sorry) ↔
@@ -443,12 +460,16 @@ theorem eqSystem4_no_solution_ge4_int :
         ¬ ∃ W : WeightsN 4 D ℤ, EqSystemN 4 D W := by
   sorry
 
+/-- For $N = 6$ and $D = 3$, does there exist no solution to the monochromatic quantum graph
+equation system over $\mathbb{Z}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem6_no_solution_d3_int :
     answer(sorry) ↔
       ¬ ∃ W : WeightsN 6 3 ℤ, EqSystemN 6 3 W := by
   sorry
 
+/-- For $N = 6$ and all $D \geq 3$, does there exist no solution to the monochromatic quantum graph
+equation system over $\mathbb{Z}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem6_no_solution_ge3_int :
     answer(sorry) ↔
@@ -456,6 +477,8 @@ theorem eqSystem6_no_solution_ge3_int :
         ¬ ∃ W : WeightsN 6 D ℤ, EqSystemN 6 D W := by
   sorry
 
+/-- For all even $N \geq 6$ and $D \geq 3$, does there exist no solution to the monochromatic
+quantum graph equation system over $\mathbb{Z}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem_no_solution_ge6_ge3_int :
     answer(sorry) ↔
@@ -463,11 +486,11 @@ theorem eqSystem_no_solution_ge6_ge3_int :
         ¬ ∃ W : WeightsN N D ℤ, EqSystemN N D W := by
   sorry
 
--- ==========================================
--- Open conjectures over {-1,0,1} ⊆ ℤ
--- (implemented as ℤ-valued weights with a pointwise restriction)
--- ==========================================
+/- ## Open conjectures over {-1,0,1} ⊆ ℤ
+   (implemented as ℤ-valued weights with a pointwise restriction) -/
 
+/-- For $N = 4$ and $D = 4$, does there exist no solution to the monochromatic quantum graph
+equation system over $\mathbb{Z}$ with weights in $\{-1, 0, 1\}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem4_no_solution_d4_trinary_int :
     answer(sorry) ↔
@@ -476,6 +499,8 @@ theorem eqSystem4_no_solution_d4_trinary_int :
             EqSystemN 4 4 W := by
   sorry
 
+/-- For $N = 4$ and all $D \geq 4$, does there exist no solution to the monochromatic quantum graph
+equation system over $\mathbb{Z}$ with weights in $\{-1, 0, 1\}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem4_no_solution_ge4_trinary_int :
     answer(sorry) ↔
@@ -485,6 +510,8 @@ theorem eqSystem4_no_solution_ge4_trinary_int :
               EqSystemN 4 D W := by
   sorry
 
+/-- For $N = 6$ and $D = 3$, does there exist no solution to the monochromatic quantum graph
+equation system over $\mathbb{Z}$ with weights in $\{-1, 0, 1\}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem6_no_solution_d3_trinary_int :
     answer(sorry) ↔
@@ -493,6 +520,8 @@ theorem eqSystem6_no_solution_d3_trinary_int :
             EqSystemN 6 3 W := by
   sorry
 
+/-- For $N = 6$ and all $D \geq 3$, does there exist no solution to the monochromatic quantum graph
+equation system over $\mathbb{Z}$ with weights in $\{-1, 0, 1\}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem6_no_solution_ge3_trinary_int :
     answer(sorry) ↔
@@ -502,6 +531,8 @@ theorem eqSystem6_no_solution_ge3_trinary_int :
               EqSystemN 6 D W := by
   sorry
 
+/-- For all even $N \geq 6$ and $D \geq 3$, does there exist no solution to the monochromatic
+quantum graph equation system over $\mathbb{Z}$ with weights in $\{-1, 0, 1\}$? -/
 @[category research open, AMS 05 14 81]
 theorem eqSystem_no_solution_ge6_ge3_trinary_int :
     answer(sorry) ↔
