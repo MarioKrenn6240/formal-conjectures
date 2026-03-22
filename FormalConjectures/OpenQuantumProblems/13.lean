@@ -15,42 +15,37 @@ limitations under the License.
 -/
 
 import FormalConjectures.Util.ProblemImports
-import Mathlib.Analysis.Complex.Basic
-import Mathlib.Analysis.InnerProductSpace.PiL2
-import Mathlib.LinearAlgebra.Matrix.Notation
-import Mathlib.LinearAlgebra.UnitaryGroup
 
 noncomputable section
 
 /-!
 # Open Quantum Problem 13: Mutually unbiased bases
 
-
 ## Mathematical problem
 
-For each integer `d ≥ 2`, determine the maximum number `k` of orthonormal bases of the complex Hilbert
-space `ℂ^d`, `𝓑₁, …, 𝓑_k`, such that any two distinct bases are *mutually unbiased*.
+For each integer $d \ge 2$, determine the maximum number $k$ for which there exist
+orthonormal bases $\mathcal{B}_1, \dots, \mathcal{B}_k$ of the complex Hilbert space
+$\mathbb{C}^d$ such that any two distinct bases are mutually unbiased.
 
 Concretely, if
-`𝓑_r = { e₀^(r), …, e_{d-1}^(r) }`
+$\mathcal{B}_r = \{ e_0^{(r)}, \dots, e_{d-1}^{(r)} \}$
 and
-`𝓑_s = { e₀^(s), …, e_{d-1}^(s) }`,
-then `𝓑_r` and `𝓑_s` are mutually unbiased if for all `i, j`
-and all `r ≠ s`,
-`|⟪ e_i^(r), e_j^(s) ⟫| = d^(-1/2)`.
+$\mathcal{B}_s = \{ e_0^{(s)}, \dots, e_{d-1}^{(s)} \}$,
+then $\mathcal{B}_r$ and $\mathcal{B}_s$ are mutually unbiased if for all $i, j$
+and all $r \ne s$,
+$|\langle e_i^{(r)}, e_j^{(s)} \rangle| = d^{-1/2}$.
 
 The problem is therefore to determine the maximal value
-
-`μ(d) := max { k : there exist k pairwise mutually unbiased orthonormal bases in ℂ^d }`.
+$\mu(d) := \max \{ k : \text{there exist } k \text{ pairwise mutually unbiased
+orthonormal bases in } \mathbb{C}^d \}$.
 
 In this file, an orthonormal basis is represented by a unitary matrix whose columns are the
-basis vectors. For two such bases `U` and `V`, the matrix
-`relativeUnitary U V = U† V`
-contains all cross-basis overlaps as its entries. Since Lean works more smoothly with squared
-norms, we formalize mutual unbiasedness by requiring
-`‖(relativeUnitary U V) i j‖^2 = 1 / d`
-for all `i, j`, which is equivalent to
-`|⟪ e_i^(r), e_j^(s) ⟫| = d^(-1/2)`.
+basis vectors. For two such bases `U` and `V`, the matrix `relativeUnitary U V`, which is
+$U^\dagger V$, contains all cross-basis overlaps as its entries. Since Lean works more
+smoothly with squared norms, we formalize mutual unbiasedness by requiring
+$\| (relativeUnitary\ U\ V)_{ij} \|^2 = 1 / d$
+for all $i, j$, which is equivalent to
+$|\langle e_i^{(r)}, e_j^{(s)} \rangle| = d^{-1/2}$.
 
 ## Background
 
@@ -58,23 +53,25 @@ Mutually unbiased bases are a basic structure in finite-dimensional quantum theo
 They arise in quantum state determination, quantum tomography, quantum cryptography,
 finite geometry, and combinatorics.
 
-A general upper bound is `μ(d) ≤ d + 1`.
-Equality is known when `d` is a prime power, via constructions over finite fields.
-For composite dimensions that are not prime powers, the exact value of `μ(d)` is in general open.
+A general upper bound is $\mu(d) \le d + 1$.
+Equality is known when $d$ is a prime power, via constructions over finite fields.
+For composite dimensions that are not prime powers, the exact value of $\mu(d)$ is in
+general open.
 
-The smallest and most famous unresolved case is `d = 6`.
+The smallest and most famous unresolved case is $d = 6$.
 The IQOQI OQP page emphasizes this dimension in particular: although many equivalent
 reformulations are known, no construction yielding more than three mutually unbiased bases
 in dimension six is known.
 
 ## What this file formalizes
 
-This file is organized around the quantity `IsMaxMUBCount d k`, which is intended to encode
-that `k` is the **maximum** number of mutually unbiased orthonormal bases in dimension `d`.
+This file is organized around the quantity `IsMaxMUBCount d k`, which expresses that
+$k$ is the maximum number of mutually unbiased orthonormal bases in dimension $d$.
 
-- the open theorem `mutuallyUnbiasedBases` expresses the full problem for arbitrary `d`;
-- the open theorem `mutuallyUnbiasedBases_dim6` expresses the especially important case `d = 6`;
-- the solved theorem `mutuallyUnbiasedBases_dim2` proves the qubit case `μ(2) = 3`.
+- the open theorem `mutuallyUnbiasedBases` expresses the full problem for all $d \ge 2$;
+- the open theorem `mutuallyUnbiasedBases_dim6` expresses the especially important case
+  $d = 6$;
+- the solved theorem `mutuallyUnbiasedBases_dim2` proves the qubit case $\mu(2) = 3$.
 
 ## References
 
@@ -87,15 +84,15 @@ that `k` is the **maximum** number of mutually unbiased orthonormal bases in dim
 ### Foundational papers
 - I. D. Ivanović,
   *Geometrical description of quantal state determination*,
-  J. Phys. A 14, 3241–3245 (1981).
+  J. Phys. A 14, 3241-3245 (1981).
 - W. K. Wootters and B. D. Fields,
   *Optimal state-determination by mutually unbiased measurements*,
-  Ann. Phys. 191, 363–381 (1989).
+  Ann. Phys. 191, 363-381 (1989).
 
 ### General constructions and surveys
 - A. Klappenecker and M. Rötteler,
   *Constructions of mutually unbiased bases*,
-  in `Finite Fields and Applications`, LNCS 2948 (2004).
+  in *Finite Fields and Applications*, LNCS 2948 (2004).
 
 ### Dimension six and the maximal-number problem
 - M. Grassl,
@@ -103,7 +100,7 @@ that `k` is the **maximum** number of mutually unbiased orthonormal bases in dim
   arXiv:quant-ph/0406175 (2004).
 - P. Butterley and W. Hall,
   *Numerical evidence for the maximum number of mutually unbiased bases in dimension six*,
-  Phys. Lett. A 369, 5–8 (2007),
+  Phys. Lett. A 369, 5-8 (2007),
   arXiv:quant-ph/0701122.
 - S. Brierley and S. Weigert,
   *Maximal Sets of Mutually Unbiased Quantum States in Dimension Six*,
@@ -114,33 +111,34 @@ that `k` is the **maximum** number of mutually unbiased orthonormal bases in dim
   Phys. Rev. A 83, 062303 (2011),
   arXiv:1103.1025.
 
-## Remark on the status of `d = 6`
+## Remark on the status of $d = 6$
 
 The dimension-six case is not known to be solved. At present, the best-known general picture is:
-- `3 ≤ μ(6) ≤ 7`,
-- complete sets of `7` MUBs are not known,
-- and several analytic and numerical works give strong evidence that one cannot go beyond `3`.
+- $3 \le \mu(6) \le 7$,
+- complete sets of $7$ MUBs are not known,
+- and several analytic and numerical works give strong evidence that one cannot go beyond $3$.
 
 This is why the theorem `mutuallyUnbiasedBases_dim6` is marked as an open research statement.
 -/
 
 namespace OpenQuantumProblem13
 
-/-! ## Preliminaries -/
+/- ## Preliminaries -/
 
-/-- A unitary matrix representing an orthonormal basis of `ℂ^d` via its columns. -/
+/-- A unitary matrix representing an orthonormal basis of $\mathbb{C}^d$ via its columns. -/
 abbrev UMat (d : ℕ) := ↥(Matrix.unitaryGroup (Fin d) ℂ)
 
 /-- The relative unitary between two bases. -/
 def relativeUnitary {d : ℕ} (U V : UMat d) : Matrix (Fin d) (Fin d) ℂ :=
   star (U : Matrix (Fin d) (Fin d) ℂ) * (V : Matrix (Fin d) (Fin d) ℂ)
 
-/-- Two unitary matrices represent mutually unbiased bases if every entry of the relative unitary
-has squared norm `1 / d`. -/
+/-- Two unitary matrices represent mutually unbiased bases if every entry of the relative
+unitary has squared norm $1 / d$. -/
 def IsUnbiased {d : ℕ} (U V : UMat d) : Prop :=
   ∀ i j : Fin d, ‖relativeUnitary U V i j‖ ^ (2 : ℕ) = (d : ℝ)⁻¹
 
-@[category API, AMS 05 15 81 94]
+/-- Mutual unbiasedness is symmetric. -/
+@[category API, AMS 5 15 81 94]
 lemma IsUnbiased.symm {d : ℕ} {U V : UMat d} (hUV : IsUnbiased U V) :
     IsUnbiased V U := by
   intro i j
@@ -157,36 +155,48 @@ members are unbiased. -/
 def IsMUBFamily {d k : ℕ} (B : Fin k → UMat d) : Prop :=
   Pairwise fun m n => IsUnbiased (B m) (B n)
 
-/-- There exist `k` mutually unbiased bases in `ℂ^d`. -/
+/-- There exist $k$ mutually unbiased bases in $\mathbb{C}^d$. -/
 def HasMUBs (d k : ℕ) : Prop :=
   ∃ B : Fin k → UMat d, IsMUBFamily B
 
-/-- There exists a complete set of `d + 1` mutually unbiased bases in `ℂ^d`. -/
+/-- There exists a complete set of $d + 1$ mutually unbiased bases in $\mathbb{C}^d$. -/
 def HasCompleteMUBs (d : ℕ) : Prop :=
   HasMUBs d (d + 1)
 
-/-- `k` is the maximal size of a family of mutually unbiased bases in dimension `d`. -/
+/-- $k$ is the maximal size of a family of mutually unbiased bases in dimension $d$. -/
 def IsMaxMUBCount (d k : ℕ) : Prop :=
   HasMUBs d k ∧ ∀ m : ℕ, HasMUBs d m → m ≤ k
 
+/-- Every dimension admits the empty family of mutually unbiased bases. -/
+@[category test, AMS 5 15 81 94]
+theorem hasMUBs_zero (d : ℕ) : HasMUBs d 0 := by
+  exact ⟨Fin.elim0, fun i => i.elim0⟩
+
+/-- Every dimension admits a family of one mutually unbiased basis. -/
+@[category test, AMS 5 15 81 94]
+theorem hasMUBs_one (d : ℕ) : HasMUBs d 1 := by
+  exact ⟨fun _ => 1, fun {i j} hij => absurd (Subsingleton.elim i j) hij⟩
+
 namespace Qubit
 
-/-- A convenient phase with `‖ω‖² = 1/2`. Using `ω = (1+i)/2` avoids any square roots. -/
+/-- A convenient phase with squared norm $1/2$. Using $\omega = (1+i)/2$ avoids square roots. -/
 def ω : ℂ := (1 + Complex.I) / 2
 
-/-- The raw phase-parametrized Hadamard matrix. The cases `ζ = 1` and `ζ = i`
-give the `X` and `Y` bases. -/
+/-- The raw phase-parametrized Hadamard matrix. The cases $\zeta = 1$ and $\zeta = i$
+give the $X$ and $Y$ bases. -/
 def phaseMatrix (ζ : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
   !![1, 1;
     ζ, -ζ]
 
-@[category API, AMS 05 15 81 94]
+/-- The squared norm of `ω` is $1/2$. -/
+@[category API, AMS 5 15 81 94]
 lemma omega_norm_sq : ‖ω‖ ^ (2 : ℕ) = (2 : ℝ)⁻¹ := by
   rw [RCLike.norm_sq_eq_def]
   simp [ω]
   norm_num
 
-@[category API, AMS 05 15 81 94]
+/-- The product $\overline{\omega}\,\omega$ is $1/2$. -/
+@[category API, AMS 5 15 81 94]
 lemma conj_omega_mul_omega : star ω * ω = ((2 : ℝ)⁻¹ : ℂ) := by
   calc
     star ω * ω = ((‖ω‖ : ℂ) ^ (2 : ℕ)) := by
@@ -194,13 +204,17 @@ lemma conj_omega_mul_omega : star ω * ω = ((2 : ℝ)⁻¹ : ℂ) := by
     _ = ((2 : ℝ)⁻¹ : ℂ) := by
       exact_mod_cast omega_norm_sq
 
-@[category API, AMS 05 15 81 94]
+/-- Taking the star of a scalar multiple on the left and multiplying by another scalar multiple
+collects the scalar factor as $\overline{a} a$. -/
+@[category API, AMS 5 15 81 94]
 lemma star_smul_mul_smul (a : ℂ) (A B : Matrix (Fin 2) (Fin 2) ℂ) :
     star (a • A) * (a • B) = (star a * a) • (star A * B) := by
-  ext i j; fin_cases i <;> fin_cases j <;>
+  ext i j
+  fin_cases i <;> fin_cases j <;>
     simp [Matrix.mul_apply, Fin.sum_univ_two] <;> ring_nf
 
-@[category API, AMS 05 15 81 94]
+/-- The relative product of two phase matrices has the expected $2 \times 2$ form. -/
+@[category API, AMS 5 15 81 94]
 lemma star_phaseMatrix_mul_phaseMatrix (ζ η : ℂ) :
     star (phaseMatrix ζ) * phaseMatrix η =
       !![1 + star ζ * η, 1 - star ζ * η;
@@ -209,13 +223,16 @@ lemma star_phaseMatrix_mul_phaseMatrix (ζ η : ℂ) :
   fin_cases i <;> fin_cases j <;>
     simp [phaseMatrix, Matrix.mul_apply, Fin.sum_univ_two, sub_eq_add_neg]
 
-@[category API, AMS 05 15 81 94]
+/-- If $\zeta$ has unit modulus, then the phase matrix is orthogonal up to the scalar factor $2$. -/
+@[category API, AMS 5 15 81 94]
 lemma star_phaseMatrix_mul_self_of_unit_phase {ζ : ℂ} (hζ : star ζ * ζ = 1) :
     star (phaseMatrix ζ) * phaseMatrix ζ = (2 : ℂ) • (1 : Matrix (Fin 2) (Fin 2) ℂ) := by
   rw [star_phaseMatrix_mul_phaseMatrix]
-  ext i j; fin_cases i <;> fin_cases j <;> rw [hζ] <;> norm_num
+  ext i j
+  fin_cases i <;> fin_cases j <;> rw [hζ] <;> norm_num
 
-@[category API, AMS 05 15 81 94]
+/-- Scaling a phase matrix by $\omega$ produces a unitary matrix whenever the phase has unit modulus. -/
+@[category API, AMS 5 15 81 94]
 lemma scaled_phaseMatrix_mem_unitary {ζ : ℂ} (hζ : star ζ * ζ = 1) :
     (ω • phaseMatrix ζ) ∈ Matrix.unitaryGroup (Fin 2) ℂ := by
   rw [Matrix.mem_unitaryGroup_iff']
@@ -229,18 +246,21 @@ lemma scaled_phaseMatrix_mem_unitary {ζ : ℂ} (hζ : star ζ * ζ = 1) :
           rw [conj_omega_mul_omega]
           norm_num
 
-@[category API, AMS 05 15 81 94]
+/-- The relative product of two scaled phase matrices is obtained by scaling the corresponding
+relative product of phase matrices. -/
+@[category API, AMS 5 15 81 94]
 lemma star_phaseBasis_mul_phaseBasis (ζ η : ℂ) :
     star (ω • phaseMatrix ζ) * (ω • phaseMatrix η) =
       (star ω * ω) • !![1 + star ζ * η, 1 - star ζ * η;
                         1 - star ζ * η, 1 + star ζ * η] := by
   rw [star_smul_mul_smul, star_phaseMatrix_mul_phaseMatrix]
 
-/-- The bundled qubit basis associated to a unit-modulus phase `ζ`. -/
+/-- The bundled qubit basis associated to a unit-modulus phase $\zeta$. -/
 def phaseU (ζ : ℂ) (hζ : star ζ * ζ = 1) : UMat 2 :=
   ⟨ω • phaseMatrix ζ, scaled_phaseMatrix_mem_unitary hζ⟩
 
-@[category API, AMS 05 15 81 94]
+/-- A complex number with $\overline{\zeta}\,\zeta = 1$ has squared norm $1$. -/
+@[category API, AMS 5 15 81 94]
 lemma phase_norm_sq_eq_one {ζ : ℂ} (hζ : star ζ * ζ = 1) :
     ‖ζ‖ ^ (2 : ℕ) = 1 := by
   have hzC : ((‖ζ‖ : ℂ) ^ (2 : ℕ)) = 1 := by
@@ -250,26 +270,30 @@ lemma phase_norm_sq_eq_one {ζ : ℂ} (hζ : star ζ * ζ = 1) :
       _ = 1 := hζ
   exact_mod_cast hzC
 
-@[category API, AMS 05 15 81 94]
+/-- Multiplying $\omega$ by a unit-modulus phase preserves the squared norm $1/2$. -/
+@[category API, AMS 5 15 81 94]
 lemma omega_mul_phase_norm_sq {ζ : ℂ} (hζ : star ζ * ζ = 1) :
     ‖ω * ζ‖ ^ (2 : ℕ) = (2 : ℝ)⁻¹ := by
   calc
     ‖ω * ζ‖ ^ (2 : ℕ) = ‖ω‖ ^ (2 : ℕ) * ‖ζ‖ ^ (2 : ℕ) := by
       rw [norm_mul, pow_two, pow_two]
       ring
-    _ = (2 : ℝ)⁻¹ * 1 := by rw [omega_norm_sq, phase_norm_sq_eq_one hζ]
-    _ = (2 : ℝ)⁻¹ := by ring
+    _ = (2 : ℝ)⁻¹ * 1 := by
+      rw [omega_norm_sq, phase_norm_sq_eq_one hζ]
+    _ = (2 : ℝ)⁻¹ := by
+      ring
 
-/-- The standard basis. -/
+/-- The standard qubit basis. -/
 def ZU : UMat 2 := 1
 
-/-- The `X` basis as a bundled unitary matrix. -/
+/-- The qubit $X$ basis as a bundled unitary matrix. -/
 def XU : UMat 2 := phaseU 1 (by simp)
 
-/-- The `Y` basis as a bundled unitary matrix. -/
+/-- The qubit $Y$ basis as a bundled unitary matrix. -/
 def YU : UMat 2 := phaseU Complex.I (by simp)
 
-@[category API, AMS 05 15 81 94]
+/-- The standard basis is mutually unbiased with any phase basis of unit-modulus phase. -/
+@[category API, AMS 5 15 81 94]
 lemma isUnbiased_Z_phaseU (ζ : ℂ) (hζ : star ζ * ζ = 1) :
     IsUnbiased ZU (phaseU ζ hζ) := by
   intro i j
@@ -281,7 +305,9 @@ lemma isUnbiased_Z_phaseU (ζ : ℂ) (hζ : star ζ * ζ = 1) :
   · simpa [relativeUnitary, ZU, phaseU, phaseMatrix, norm_mul] using
       omega_mul_phase_norm_sq (ζ := ζ) hζ
 
-@[category API, AMS 05 15 81 94]
+/-- If $\overline{\zeta}\,\eta = i$, then the relative unitary between the corresponding phase
+bases is the qubit mutually unbiased overlap matrix. -/
+@[category API, AMS 5 15 81 94]
 lemma relative_phaseU_phaseU_of_mul_eq_I {ζ η : ℂ}
     (hζ : star ζ * ζ = 1) (hη : star η * η = 1) (hζη : star ζ * η = Complex.I) :
     relativeUnitary (phaseU ζ hζ) (phaseU η hη) = !![ω, star ω;
@@ -300,10 +326,12 @@ lemma relative_phaseU_phaseU_of_mul_eq_I {ζ η : ℂ}
       rw [conj_omega_mul_omega]
     _ = !![ω, star ω;
            star ω, ω] := by
-      ext i j; fin_cases i <;> fin_cases j <;>
+      ext i j
+      fin_cases i <;> fin_cases j <;>
         simp [ω, div_eq_mul_inv, sub_eq_add_neg] <;> ring_nf
 
-@[category API, AMS 05 15 81 94]
+/-- If $\overline{\zeta}\,\eta = i$, then the corresponding phase bases are mutually unbiased. -/
+@[category API, AMS 5 15 81 94]
 lemma isUnbiased_phaseU_phaseU_of_mul_eq_I {ζ η : ℂ}
     (hζ : star ζ * ζ = 1) (hη : star η * η = 1) (hζη : star ζ * η = Complex.I) :
     IsUnbiased (phaseU ζ hζ) (phaseU η hη) := by
@@ -311,11 +339,12 @@ lemma isUnbiased_phaseU_phaseU_of_mul_eq_I {ζ η : ℂ}
   rw [relative_phaseU_phaseU_of_mul_eq_I hζ hη hζη]
   fin_cases i <;> fin_cases j <;> simp [omega_norm_sq]
 
-/-- The three standard qubit MUBs: `Z`, `X`, and `Y`. -/
+/-- The three standard qubit mutually unbiased bases: $Z$, $X$, and $Y$. -/
 def qubitFamily : Fin 3 → UMat 2 :=
   ![ZU, XU, YU]
 
-@[category API, AMS 05 15 81 94]
+/-- The standard qubit family is a family of mutually unbiased bases. -/
+@[category API, AMS 5 15 81 94]
 lemma qubitFamily_isMUB : IsMUBFamily qubitFamily := by
   intro i j hij
   fin_cases i <;> fin_cases j <;> try contradiction
@@ -333,34 +362,41 @@ lemma qubitFamily_isMUB : IsMUBFamily qubitFamily := by
         isUnbiased_phaseU_phaseU_of_mul_eq_I
           (ζ := 1) (η := Complex.I) (by simp) (by simp) (by simp))
 
-@[category API, AMS 05 15 81 94]
+/-- There exist three mutually unbiased bases in dimension $2$. -/
+@[category API, AMS 5 15 81 94]
 lemma qubit_hasThreeMUBs : HasMUBs 2 3 := by
   exact ⟨qubitFamily, qubitFamily_isMUB⟩
 
-/-! ### Bloch-vector upper bound for qubits -/
+/- ## Bloch-vector upper bound for qubits -/
 
-@[category API, AMS 05 15 81 94]
+/-- The first entry of the first column of a qubit unitary basis matrix. -/
+@[category API, AMS 5 15 81 94]
 def u0 (U : UMat 2) : ℂ :=
   (U : Matrix (Fin 2) (Fin 2) ℂ) 0 0
 
-@[category API, AMS 05 15 81 94]
+/-- The second entry of the first column of a qubit unitary basis matrix. -/
+@[category API, AMS 5 15 81 94]
 def u1 (U : UMat 2) : ℂ :=
   (U : Matrix (Fin 2) (Fin 2) ℂ) 1 0
 
+/-- The real Bloch-vector space for qubits. -/
 abbrev BlochVec := EuclideanSpace ℝ (Fin 3)
 
-@[category API, AMS 05 15 81 94]
+/-- The Bloch vector associated to the first column of a qubit basis matrix. -/
+@[category API, AMS 5 15 81 94]
 def bloch (U : UMat 2) : BlochVec :=
   !₂[ 2 * Complex.re (star (u0 U) * u1 U)
     , 2 * Complex.im (star (u0 U) * u1 U)
     , Complex.normSq (u0 U) - Complex.normSq (u1 U) ]
 
-@[category API, AMS 05 15 81 94]
+/-- The $(0,0)$ entry of the relative unitary is the overlap of the first columns. -/
+@[category API, AMS 5 15 81 94]
 lemma relativeUnitary_apply_zero_zero (U V : UMat 2) :
     relativeUnitary U V 0 0 = star (u0 U) * u0 V + star (u1 U) * u1 V := by
   simp [relativeUnitary, u0, u1, Matrix.mul_apply, Fin.sum_univ_two]
 
-@[category API, AMS 05 15 81 94]
+/-- The first column of a unitary matrix has squared norm $1$. -/
+@[category API, AMS 5 15 81 94]
 lemma firstCol_normSq (U : UMat 2) :
     Complex.normSq (u0 U) + Complex.normSq (u1 U) = 1 := by
   have hu : star (U : Matrix (Fin 2) (Fin 2) ℂ) * (U : Matrix (Fin 2) (Fin 2) ℂ) = 1 := by
@@ -370,12 +406,15 @@ lemma firstCol_normSq (U : UMat 2) :
     simpa [u0, u1, Matrix.mul_apply, Fin.sum_univ_two, Complex.normSq_eq_conj_mul_self] using h00
   exact_mod_cast h00'
 
-@[category API, AMS 05 15 81 94]
+/-- The real part of $z \overline{w}$ is the Euclidean dot product of the coordinate pairs of
+`z` and `w`. -/
+@[category API, AMS 5 15 81 94]
 lemma re_mul_conj (z w : ℂ) :
     Complex.re (z * star w) = Complex.re z * Complex.re w + Complex.im z * Complex.im w := by
   simp [Complex.mul_re]
 
-@[category API, AMS 05 15 81 94]
+/-- The Bloch inner product is determined by the $(0,0)$ entry of the relative unitary. -/
+@[category API, AMS 5 15 81 94]
 lemma bloch_inner_eq_two_normSq_sub_one (U V : UMat 2) :
     inner ℝ (bloch U) (bloch V) = 2 * Complex.normSq (relativeUnitary U V 0 0) - 1 := by
   let a : ℂ := u0 U
@@ -417,24 +456,28 @@ lemma bloch_inner_eq_two_normSq_sub_one (U V : UMat 2) :
               ring_nf
   nlinarith [hnorm, hdot, hsumU, hsumV]
 
-@[category API, AMS 05 15 81 94]
+/-- The relative unitary of a basis with itself is the identity matrix. -/
+@[category API, AMS 5 15 81 94]
 lemma relativeUnitary_self (U : UMat 2) : relativeUnitary U U = 1 := by
   rw [relativeUnitary]
   exact Matrix.UnitaryGroup.star_mul_self U
 
-@[category API, AMS 05 15 81 94]
+/-- Every qubit Bloch vector has squared Euclidean norm $1$. -/
+@[category API, AMS 5 15 81 94]
 lemma bloch_inner_self (U : UMat 2) : inner ℝ (bloch U) (bloch U) = 1 := by
   rw [bloch_inner_eq_two_normSq_sub_one, relativeUnitary_self]
   norm_num
 
-@[category API, AMS 05 15 81 94]
+/-- A qubit Bloch vector is never the zero vector. -/
+@[category API, AMS 5 15 81 94]
 lemma bloch_ne_zero (U : UMat 2) : bloch U ≠ 0 := by
   intro h
   have h0 : (0 : ℝ) = 1 := by
     simpa [h] using (bloch_inner_self U).symm
   norm_num at h0
 
-@[category API, AMS 05 15 81 94]
+/-- Mutually unbiased qubit bases have orthogonal Bloch vectors. -/
+@[category API, AMS 5 15 81 94]
 lemma bloch_inner_eq_zero_of_isUnbiased {U V : UMat 2} (hUV : IsUnbiased U V) :
     inner ℝ (bloch U) (bloch V) = 0 := by
   rw [bloch_inner_eq_two_normSq_sub_one]
@@ -447,7 +490,8 @@ lemma bloch_inner_eq_zero_of_isUnbiased {U V : UMat 2} (hUV : IsUnbiased U V) :
   rw [h00]
   norm_num
 
-@[category API, AMS 05 15 81 94]
+/-- No family of mutually unbiased bases in dimension $2$ has size greater than $3$. -/
+@[category API, AMS 5 15 81 94]
 lemma qubit_upper_bound (m : ℕ) : HasMUBs 2 m → m ≤ 3 := by
   rintro ⟨B, hB⟩
   let v : Fin m → BlochVec := fun i => bloch (B i)
@@ -463,81 +507,69 @@ lemma qubit_upper_bound (m : ℕ) : HasMUBs 2 m → m ≤ 3 := by
     hlin.fintype_card_le_finrank
   simpa [BlochVec, finrank_euclideanSpace_fin] using hcard
 
-@[category API, AMS 05 15 81 94]
+/-- The maximum number of mutually unbiased bases in dimension $2$ is $3$. -/
+@[category API, AMS 5 15 81 94]
 theorem qubit_maximal : IsMaxMUBCount 2 3 := by
   exact ⟨qubit_hasThreeMUBs, fun m hm => qubit_upper_bound m hm⟩
 
 end Qubit
 
-/-! ## Solved special cases -/
+/- ## Solved special cases -/
 
-/-- In dimension `2`, the maximum number of mutually unbiased orthonormal bases is `3`. -/
-@[category research solved, AMS 05 15 81 94]
+/-- In dimension $2$, the maximum number of mutually unbiased orthonormal bases is $3$. -/
+@[category research solved, AMS 5 15 81 94]
 theorem mutuallyUnbiasedBases_dim2 : IsMaxMUBCount 2 3 := by
   simpa using Qubit.qubit_maximal
 
-/-- Known general bounds in dimension `6`: the maximal number of mutually unbiased
-bases satisfies `3 ≤ μ(6) ≤ 7`. -/
-@[category research solved, AMS 05 15 81 94]
+/-- Known general bounds in dimension $6$: the maximal number of mutually unbiased bases
+satisfies $3 \le \mu(6) \le 7$. -/
+@[category research solved, AMS 5 15 81 94]
 theorem mutuallyUnbiasedBases_dim6_bounds :
     HasMUBs 6 3 ∧ ∀ m : ℕ, HasMUBs 6 m → m ≤ 7 := by
   sorry
 
-/-! ## Open problems -/
+/- ## Open problems -/
 
-/--
-Special case in dimension `6`: determine the maximal number of mutually unbiased orthonormal
-bases in `ℂ^6`. Infamous first unresolved case.
--/
-@[category research open, AMS 05 15 81 94]
+/-- Special case in dimension $6$: determine the maximal number of mutually unbiased
+orthonormal bases in $\mathbb{C}^6$. -/
+@[category research open, AMS 5 15 81 94]
 theorem mutuallyUnbiasedBases_dim6 :
     IsMaxMUBCount 6 (answer(sorry)) := by
   sorry
 
-/--
-Special case in dimension `10` (not a prime power): determine the maximal number of mutually
-unbiased orthonormal bases in `ℂ^10`.
--/
-@[category research open, AMS 05 15 81 94]
+/-- Special case in dimension $10$ (not a prime power): determine the maximal number of
+mutually unbiased orthonormal bases in $\mathbb{C}^{10}$. -/
+@[category research open, AMS 5 15 81 94]
 theorem mutuallyUnbiasedBases_dim10 :
     IsMaxMUBCount 10 (answer(sorry)) := by
   sorry
 
-/--
-Special case in dimension `12` (not a prime power): determine the maximal number of mutually
-unbiased orthonormal bases in `ℂ^12`.
--/
-@[category research open, AMS 05 15 81 94]
+/-- Special case in dimension $12$ (not a prime power): determine the maximal number of
+mutually unbiased orthonormal bases in $\mathbb{C}^{12}$. -/
+@[category research open, AMS 5 15 81 94]
 theorem mutuallyUnbiasedBases_dim12 :
     IsMaxMUBCount 12 (answer(sorry)) := by
   sorry
 
-/--
-Special case in dimension `14` (not a prime power): determine the maximal number of mutually
-unbiased orthonormal bases in `ℂ^14`.
--/
-@[category research open, AMS 05 15 81 94]
+/-- Special case in dimension $14$ (not a prime power): determine the maximal number of
+mutually unbiased orthonormal bases in $\mathbb{C}^{14}$. -/
+@[category research open, AMS 5 15 81 94]
 theorem mutuallyUnbiasedBases_dim14 :
     IsMaxMUBCount 14 (answer(sorry)) := by
   sorry
 
-/--
-Special case in dimension `15` (not a prime power): determine the maximal number of mutually
-unbiased orthonormal bases in `ℂ^15`.
--/
-@[category research open, AMS 05 15 81 94]
+/-- Special case in dimension $15$ (not a prime power): determine the maximal number of
+mutually unbiased orthonormal bases in $\mathbb{C}^{15}$. -/
+@[category research open, AMS 5 15 81 94]
 theorem mutuallyUnbiasedBases_dim15 :
     IsMaxMUBCount 15 (answer(sorry)) := by
   sorry
 
-/--
-Open Quantum Problem 13: determine the maximal number of mutually unbiased orthonormal bases
-in `ℂ^d` for d ≥ 2.
--/
-@[category research open, AMS 05 15 81 94]
+/-- Open Quantum Problem 13: determine the maximal number of mutually unbiased orthonormal
+bases in $\mathbb{C}^d$ for $d \ge 2$. -/
+@[category research open, AMS 5 15 81 94]
 theorem mutuallyUnbiasedBases (d : ℕ) (hd : 2 ≤ d) :
-    IsMaxMUBCount d (answer(sorry)) := by
+    IsMaxMUBCount d ((answer(sorry) : ℕ → ℕ) d) := by
   sorry
-
 
 end OpenQuantumProblem13
