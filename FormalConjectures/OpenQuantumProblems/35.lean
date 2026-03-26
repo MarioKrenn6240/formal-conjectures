@@ -15,7 +15,6 @@ limitations under the License.
 -/
 
 import FormalConjectures.Util.ProblemImports
-import Mathlib.Analysis.InnerProductSpace.PiL2
 
 /-!
 # Open Quantum Problem 35: existence of absolutely maximally entangled pure states
@@ -99,8 +98,7 @@ instance {n d : ℕ} : CoeFun (StateVector n d) (fun _ => Config n d → ℂ) wh
 /-- A state built from amplitudes has those amplitudes as its coordinates. -/
 @[simp, category API, AMS 5 15 81 94]
 lemma mkStateVector_apply {n d : ℕ} (ψ : Config n d → ℂ) (x : Config n d) :
-    mkStateVector ψ x = ψ x := by
-  simp [mkStateVector]
+    mkStateVector ψ x = ψ x := rfl
 
 /-- A state vector is normalized if it has $L^2$ norm $1$. -/
 def IsNormalized {n d : ℕ} (ψ : StateVector n d) : Prop :=
@@ -142,12 +140,18 @@ theorem permuteConfig_refl {n d : ℕ} (x : Config n d) :
 def permuteState {n d : ℕ} (π : Equiv.Perm (Fin n)) (ψ : StateVector n d) : StateVector n d :=
   mkStateVector fun x => ψ (permuteConfig π x)
 
+/-- Evaluating a permuted state vector reads the amplitude at the permuted configuration. -/
+@[simp, category API, AMS 5 15 81 94]
+lemma permuteState_apply {n d : ℕ} (π : Equiv.Perm (Fin n)) (ψ : StateVector n d) (x : Config n d) :
+    permuteState π ψ x = ψ (permuteConfig π x) := by
+  rw [permuteState, mkStateVector_apply]
+
 /-- The identity permutation leaves a state vector unchanged. -/
 @[category test, AMS 5 15 81 94]
 theorem permuteState_refl {n d : ℕ} (ψ : StateVector n d) :
     permuteState (Equiv.refl (Fin n)) ψ = ψ := by
   ext x
-  simp [permuteState, permuteConfig, mkStateVector]
+  simp [permuteState_apply, permuteConfig_refl]
 
 /--
 Merge a configuration on the first $m$ parties and a configuration on the remaining $n-m$
@@ -300,6 +304,12 @@ theorem not_isConstantConfig_example :
 noncomputable def diagonalState (n d : ℕ) : StateVector n d :=
   mkStateVector fun x => if IsConstantConfig x then uniformCoeff d else 0
 
+/-- Evaluating the diagonal state returns the uniform coefficient on constant strings and `0` otherwise. -/
+@[simp, category API, AMS 5 15 81 94]
+lemma diagonalState_apply {n d : ℕ} (x : Config n d) :
+    diagonalState n d x = if IsConstantConfig x then uniformCoeff d else 0 := by
+  rw [diagonalState, mkStateVector_apply]
+
 /-- The standard $d$-dimensional Bell state. -/
 noncomputable abbrev bellState (d : ℕ) : StateVector 2 d :=
   diagonalState 2 d
@@ -343,77 +353,65 @@ lemma isConstantConfig_iff_exists_constantConfig {n d : ℕ} (hn : 1 ≤ n)
 @[category API, AMS 5 15 81 94]
 lemma uniformCoeff_norm_sq (d : ℕ) :
     ‖uniformCoeff d‖ ^ 2 = ((d : ℝ)⁻¹) := by
-  rw [← RCLike.normSq_eq_def' (uniformCoeff d)]
   have hnonneg : (0 : ℝ) ≤ (d : ℝ)⁻¹ := by
     positivity
-  calc
-    RCLike.normSq (uniformCoeff d)
-        = Real.sqrt ((d : ℝ)⁻¹) * Real.sqrt ((d : ℝ)⁻¹) := by
-            simp [uniformCoeff]
-    _ = (d : ℝ)⁻¹ := by
-          simpa [pow_two] using (Real.sq_sqrt hnonneg)
+  simpa [uniformCoeff, pow_two, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (Real.sqrt_nonneg _)] using (Real.sq_sqrt hnonneg)
 
 /-- The squared norm of the uniform coefficient is the inverse local dimension. -/
 @[category API, AMS 5 15 81 94]
 lemma uniformCoeff_mul_star (d : ℕ) :
     uniformCoeff d * star (uniformCoeff d) = ((d : ℂ)⁻¹) := by
-  have hnonneg : (0 : ℝ) ≤ (d : ℝ)⁻¹ := by
-    positivity
-  have hsq : Real.sqrt ((d : ℝ)⁻¹) * Real.sqrt ((d : ℝ)⁻¹) = (d : ℝ)⁻¹ := by
-    simpa [pow_two] using (Real.sq_sqrt hnonneg)
   calc
-    uniformCoeff d * star (uniformCoeff d)
-        = (((Real.sqrt ((d : ℝ)⁻¹) * Real.sqrt ((d : ℝ)⁻¹)) : ℝ) : ℂ) := by
-            simp [uniformCoeff]
+    uniformCoeff d * star (uniformCoeff d) = ((‖uniformCoeff d‖ ^ 2 : ℝ) : ℂ) := by
+      simpa [RCLike.star_def] using (RCLike.mul_conj (uniformCoeff d))
     _ = (((d : ℝ)⁻¹ : ℝ) : ℂ) := by
-          rw [hsq]
+      rw [uniformCoeff_norm_sq]
     _ = ((d : ℂ)⁻¹) := by
-          simp [Complex.ofReal_inv]
+      simp [Complex.ofReal_inv]
 
 /-- For $n \ge 1$ and $d \ge 1$, the diagonal state is normalized. -/
 @[category API, AMS 5 15 81 94]
 lemma diagonalState_isNormalized {n d : ℕ} (hn : 1 ≤ n) (hd : 1 ≤ d) :
     IsNormalized (diagonalState n d) := by
   classical
-  have hd0 : d ≠ 0 := by omega
-  have hfilter :
-      (Finset.univ.filter (fun x : Config n d => IsConstantConfig x)) =
-        Finset.univ.image (constantConfig (m := n) (d := d)) := by
+  let S : Finset (Config n d) := Finset.univ.filter (fun x : Config n d => IsConstantConfig x)
+  have hS :
+      S = Finset.image (constantConfig (m := n) (d := d)) (Finset.univ : Finset (Fin d)) := by
     ext x
-    simp [isConstantConfig_iff_exists_constantConfig (hn := hn) (x := x), eq_comm]
+    simp [S, isConstantConfig_iff_exists_constantConfig (hn := hn) (x := x), eq_comm]
+  have hcardS : S.card = d := by
+    rw [hS]
+    simpa using
+      (Finset.card_image_of_injective
+        (s := (Finset.univ : Finset (Fin d)))
+        (f := constantConfig (m := n) (d := d))
+        (constantConfig_injective (n := n) (d := d) hn))
   have hnorm_sq :
       ‖diagonalState n d‖ ^ 2 = 1 := by
     calc
       ‖diagonalState n d‖ ^ 2
-          = ∑ x : Config n d, ‖(diagonalState n d).ofLp x‖ ^ 2 := by
+          = ∑ x : Config n d, ‖diagonalState n d x‖ ^ 2 := by
               simpa using (EuclideanSpace.norm_sq_eq (diagonalState n d))
       _ = ∑ x : Config n d,
             if IsConstantConfig x then ‖uniformCoeff d‖ ^ 2 else 0 := by
             refine Finset.sum_congr rfl ?_
             intro x hx
-            by_cases hconst : IsConstantConfig x <;> simp [diagonalState, mkStateVector, hconst]
-      _ = Finset.sum (Finset.univ.filter (fun x : Config n d => IsConstantConfig x))
-            (fun _ => ‖uniformCoeff d‖ ^ 2) := by
-              symm
-              simpa using
-                (Finset.sum_filter (s := Finset.univ)
-                  (p := fun x : Config n d => IsConstantConfig x)
-                  (f := fun _ => ‖uniformCoeff d‖ ^ 2))
-      _ = ∑ a : Fin d, ‖uniformCoeff d‖ ^ 2 := by
-            rw [hfilter]
-            simpa using
-              (Finset.sum_image
-                (s := (Finset.univ : Finset (Fin d)))
-                (g := constantConfig (m := n) (d := d))
-                (f := fun _ : Config n d => ‖uniformCoeff d‖ ^ 2)
-                (by
-                  intro a _ b _ hab
-                  exact constantConfig_injective (n := n) (d := d) hn hab))
-      _ = (d : ℝ) * (‖uniformCoeff d‖ ^ 2) := by
-            simp [Finset.sum_const, nsmul_eq_mul]
+            by_cases hconst : IsConstantConfig x
+            · simp [diagonalState_apply, hconst]
+            · simp [diagonalState_apply, hconst]
+      _ = (S.card : ℝ) * ‖uniformCoeff d‖ ^ 2 := by
+            rw [← Finset.sum_filter
+              (s := Finset.univ)
+              (p := fun x : Config n d => IsConstantConfig x)
+              (f := fun _ => ‖uniformCoeff d‖ ^ 2)]
+            simp [S, Finset.sum_const, nsmul_eq_mul]
+      _ = (d : ℝ) * ‖uniformCoeff d‖ ^ 2 := by
+            rw [hcardS]
       _ = (d : ℝ) * ((d : ℝ)⁻¹) := by
             rw [uniformCoeff_norm_sq]
       _ = 1 := by
+            have hd0 : d ≠ 0 := by omega
             have hdr : (d : ℝ) ≠ 0 := by
               exact_mod_cast hd0
             simpa using (mul_inv_cancel₀ hdr)
@@ -437,11 +435,11 @@ lemma diagonalState_permute (n d : ℕ) (π : Equiv.Perm (Fin n)) :
   ext x
   by_cases h : IsConstantConfig x
   · have h' : IsConstantConfig (permuteConfig π x) := (isConstantConfig_permute_iff π x).2 h
-    simp [permuteState, diagonalState, permuteConfig, mkStateVector, h, h']
+    simp [permuteState_apply, diagonalState_apply, h, h']
   · have h' : ¬ IsConstantConfig (permuteConfig π x) := by
       intro hx
       exact h ((isConstantConfig_permute_iff π x).1 hx)
-    simp [permuteState, diagonalState, permuteConfig, mkStateVector, h, h']
+    simp [permuteState_apply, diagonalState_apply, h, h']
 
 /-- A tail configuration equals the constant completion of $x$ iff all of its entries agree with the unique entry of $x$. -/
 @[category API, AMS 5 15 81 94]
@@ -513,11 +511,17 @@ lemma diagonalState_combineFirst_one {n d : ℕ} (hn : 1 ≤ n)
     diagonalState n d (combineFirst (n := n) (d := d) 1 hn x z) =
       if z = constantCompletion (n := n) (d := d) x then uniformCoeff d else 0 := by
   by_cases h : z = constantCompletion (n := n) (d := d) x
-  · simp [diagonalState, mkStateVector, h, (isConstantConfig_combineFirst_one_iff hn x z).2 h]
+  · subst z
+    have hconst :
+        IsConstantConfig
+          (combineFirst (n := n) (d := d) 1 hn x (constantCompletion (n := n) (d := d) x)) := by
+      exact (isConstantConfig_combineFirst_one_iff hn x
+        (constantCompletion (n := n) (d := d) x)).2 rfl
+    rw [diagonalState_apply, if_pos hconst, if_pos rfl]
   · have h' : ¬ IsConstantConfig (combineFirst (n := n) (d := d) 1 hn x z) := by
       intro hx
       exact h ((isConstantConfig_combineFirst_one_iff hn x z).1 hx)
-    simp [diagonalState, mkStateVector, h, h']
+    rw [diagonalState_apply, if_neg h', if_neg h]
 
 /- ## Generic completion criterion -/
 
@@ -652,7 +656,7 @@ lemma diagonalState_combineFirst_two_of_ne {d : ℕ} {x z : Config 2 d}
         hconst (leftIndex (m := 2) (n := 4) (by decide) 0)
           (leftIndex (m := 2) (n := 4) (by decide) 1)
     exact h hx
-  simp [diagonalState, mkStateVector, hnot]
+  simp [diagonalState_apply, hnot]
 
 /-- Sanity check: the standard GHZ family on $4$ parties is not absolutely maximally entangled for any local dimension $d \ge 2$. -/
 @[category test, AMS 5 15 81 94]
@@ -674,14 +678,17 @@ lemma ghzState4_not_ame {d : ℕ} (hd : 2 ≤ d) :
     rw [reducedDensityFirst]
     refine Finset.sum_eq_zero ?_
     intro z _
-    simp [diagonalState_combineFirst_two_of_ne (x := x01) (z := z) hx01]
+    have hz0 : diagonalState 4 d (combineFirst (n := 4) (d := d) 2 (by decide) x01 z) = 0 :=
+      diagonalState_combineFirst_two_of_ne (x := x01) (z := z) hx01
+    rw [hz0]
+    simp
   have hentry :
       reducedDensityFirst (n := 4) (d := d) 2 (by decide) (diagonalState 4 d) x01 x01 =
         maximallyMixed 2 d x01 x01 := by
     have hredEq :
         reducedDensityFirst (n := 4) (d := d) 2 (by decide) (diagonalState 4 d) =
           maximallyMixed 2 d := by
-      simpa [HasMaximallyMixedFirstReduction, permuteState, permuteConfig, mkStateVector] using
+      simpa [HasMaximallyMixedFirstReduction, permuteState_refl] using
         (hAME.2 (Equiv.refl (Fin 4)))
     exact congrArg (fun M : Matrix (Config 2 d) (Config 2 d) ℂ => M x01 x01) hredEq
   have hcontra : (0 : ℂ) = ((Fintype.card (Config 2 d) : ℂ)⁻¹) := by
