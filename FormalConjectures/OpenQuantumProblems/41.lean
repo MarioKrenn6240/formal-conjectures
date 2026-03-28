@@ -918,7 +918,6 @@ theorem signedParityDiagonal222_not_isDensityMatrix :
 
 /- ## Full conjecture -/
 
-set_option warn.sorry false in
 /-- Open Quantum Problem 41 in the explicit tripartite mixed-state form stated on the OQP page. -/
 @[category research open, AMS 15 47 81 94]
 theorem oqp_41 :
