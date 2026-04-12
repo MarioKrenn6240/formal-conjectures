@@ -18,7 +18,6 @@ import FormalConjectures.Util.ProblemImports
 
 noncomputable section
 
-open scoped BigOperators
 
 /-!
 # Open Quantum Problem 23: SIC-POVMs
