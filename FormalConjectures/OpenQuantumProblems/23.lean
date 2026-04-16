@@ -326,7 +326,7 @@ lemma hesseS_mul_self : hesseS * hesseS = (1 / 2 : ℝ) := by
   simpa [pow_two] using hesseS_sq
 
 /-- The square of $\sqrt{3}$ is $3$. -/
-@[category API, AMS 15 47 81]
+@[category test, AMS 15 47 81]
 lemma sq_sqrt_three : (Real.sqrt 3) ^ (2 : ℕ) = (3 : ℝ) := by
   have h : 0 ≤ (3 : ℝ) := by positivity
   nlinarith [Real.sq_sqrt h]
@@ -450,7 +450,7 @@ lemma explicit_neg_half_sub_I_mul_sqrt_three_half_normSq :
   simpa using omega_sq_normSq
 
 /-- A normalization identity used in the qubit SIC calculations. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma one_third_add_two_thirds_mul_explicit_neg_half_sub_sqrt_three_half_mul_I_normSq :
     (1 / 3 : ℝ) + (2 / 3 : ℝ) *
       Complex.normSq (-(1 / 2 : ℂ) - ((Real.sqrt 3 : ℂ) / 2) * Complex.I) = 1 := by
@@ -458,7 +458,7 @@ lemma one_third_add_two_thirds_mul_explicit_neg_half_sub_sqrt_three_half_mul_I_n
   norm_num
 
 /-- A normalization identity used in the qutrit SIC calculations. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma one_half_add_one_half_mul_explicit_neg_half_sub_sqrt_three_half_mul_I_normSq :
     (1 / 2 : ℝ) + (1 / 2 : ℝ) *
       Complex.normSq (-(1 / 2 : ℂ) - ((Real.sqrt 3 : ℂ) / 2) * Complex.I) = 1 := by
@@ -466,7 +466,7 @@ lemma one_half_add_one_half_mul_explicit_neg_half_sub_sqrt_three_half_mul_I_norm
   norm_num
 
 /-- A rearranged normalization identity used in the qutrit SIC calculations. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma one_half_mul_explicit_neg_half_sub_sqrt_three_half_mul_I_normSq_add_one_half :
     (1 / 2 : ℝ) * Complex.normSq (-(1 / 2 : ℂ) - ((Real.sqrt 3 : ℂ) / 2) * Complex.I)
       + (1 / 2 : ℝ) = 1 := by
@@ -474,17 +474,17 @@ lemma one_half_mul_explicit_neg_half_sub_sqrt_three_half_mul_I_normSq_add_one_ha
   norm_num
 
 /-- Multiplying $\omega$ by itself gives $\omega^2$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma omega_mul_omega : ω * ω = ω ^ 2 := by
   ring
 
 /-- A complex number commutes with a real scalar embedded into $\mathbb{C}$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma mul_ofReal_comm (z : ℂ) (r : ℝ) : z * (r : ℂ) = (r : ℂ) * z := by
   ring
 
 /-- Squaring the tetrahedral amplitude inside a product yields $(2/3)z$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma tetraB_sq_mul (z : ℂ) :
     (tetraB : ℂ) * ((tetraB : ℂ) * z) = (2 / 3 : ℂ) * z := by
   calc
@@ -492,7 +492,7 @@ lemma tetraB_sq_mul (z : ℂ) :
     _ = (2 / 3 : ℂ) * z := by simp
 
 /-- Squaring the Hesse scale inside a product yields $(1/2)z$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma hesseS_sq_mul (z : ℂ) :
     (hesseS : ℂ) * ((hesseS : ℂ) * z) = (1 / 2 : ℂ) * z := by
   calc
@@ -520,7 +520,7 @@ lemma omega_four : ω ^ 4 = ω := by
     _ = ω := by simp
 
 /-- The product $\omega\omega^2$ equals $1$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma omega_mul_omega_sq : ω * (ω ^ 2) = 1 := by
   calc
     ω * (ω ^ 2) = ω ^ 3 := by ring
@@ -606,7 +606,7 @@ lemma normSq_one_add_two_mul_omega_sq : Complex.normSq (1 + 2 * (ω ^ 2)) = 3 :=
   nlinarith [sq_sqrt_three]
 
 /-- A standard qubit SIC overlap involving $\omega$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_qubit_offdiag_omega :
     Complex.normSq ((1 / 3 : ℂ) + (2 / 3 : ℂ) * ω) = (1 / 3 : ℝ) := by
   have hrewrite : ((1 / 3 : ℂ) + (2 / 3 : ℂ) * ω) = ((1 / 3 : ℂ) * (1 + 2 * ω)) := by
@@ -615,7 +615,7 @@ lemma normSq_qubit_offdiag_omega :
   norm_num [Complex.normSq_ofReal]
 
 /-- A standard qubit SIC overlap involving $\omega^2$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_qubit_offdiag_omega_sq :
     Complex.normSq ((1 / 3 : ℂ) + (2 / 3 : ℂ) * (ω ^ 2)) = (1 / 3 : ℝ) := by
   have hrewrite :
@@ -625,26 +625,26 @@ lemma normSq_qubit_offdiag_omega_sq :
   norm_num [Complex.normSq_ofReal]
 
 /-- The same qubit SIC overlap written with the scalar on the left. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_qubit_offdiag_omega_left :
     Complex.normSq ((1 / 3 : ℂ) + ω * (2 / 3 : ℂ)) = (1 / 3 : ℝ) := by
   simpa [mul_comm] using normSq_qubit_offdiag_omega
 
 /-- The same qubit SIC overlap with $\omega^2$ and the scalar on the left. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_qubit_offdiag_omega_sq_left :
     Complex.normSq ((1 / 3 : ℂ) + (ω ^ 2) * (2 / 3 : ℂ)) = (1 / 3 : ℝ) := by
   simpa [mul_comm] using normSq_qubit_offdiag_omega_sq
 
 /-- A qubit SIC overlap written using complex conjugation of $\omega$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_qubit_offdiag_star_omega :
     Complex.normSq ((1 / 3 : ℂ) + (2 / 3 : ℂ) * star ω) = (1 / 3 : ℝ) := by
   rw [star_omega]
   simpa using normSq_qubit_offdiag_omega_sq
 
 /-- A qubit SIC overlap written with the explicit closed form for $\omega$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_qubit_offdiag_explicit_omega :
     Complex.normSq ((1 / 3 : ℂ) + (2 / 3 : ℂ) *
       (-(1 / 2 : ℂ) + ((Real.sqrt 3 : ℂ) / 2) * Complex.I)) = (1 / 3 : ℝ) := by
@@ -656,7 +656,7 @@ lemma normSq_qubit_offdiag_explicit_omega :
   simpa using normSq_qubit_offdiag_omega
 
 /-- A qubit SIC overlap using $\overline{\omega}$ and the explicit $\omega^2$ form. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_qubit_offdiag_star_omega_mul_explicit_omega_sq :
     Complex.normSq ((1 / 3 : ℂ) +
       (tetraB : ℂ) * star ω * ((tetraB : ℂ) *
@@ -666,7 +666,7 @@ lemma normSq_qubit_offdiag_star_omega_mul_explicit_omega_sq :
   simpa only [pow_two, tetraB_sq_complex, omega_four] using normSq_qubit_offdiag_omega
 
 /-- A qubit SIC overlap using the explicit $\omega$ form and an extra factor of $\omega$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_qubit_offdiag_tetraB_explicit_omega_mul_omega :
     Complex.normSq ((1 / 3 : ℂ) +
       (tetraB : ℂ) * (-(1 / 2 : ℂ) + ((Real.sqrt 3 : ℂ) / 2) * Complex.I) *
@@ -679,15 +679,15 @@ lemma normSq_qubit_offdiag_tetraB_explicit_omega_mul_omega :
   ring_nf
   simpa only [pow_two, tetraB_sq_complex] using normSq_qubit_offdiag_omega_sq
 
-/-- A qubit SIC overlap written using `starRingEnd` on $\omega$. -/
-@[simp, category API, AMS 15 47 81]
+/-- A qubit SIC overlap written using `starRingEnd` on $\omega`. -/
+@[simp, category test, AMS 15 47 81]
 lemma normSq_qubit_offdiag_star_omega_exact :
     Complex.normSq ((1 / 3 : ℂ) + (2 / 3 : ℂ) * (starRingEnd ℂ) ω) = (1 / 3 : ℝ) := by
   change Complex.normSq ((1 / 3 : ℂ) + (2 / 3 : ℂ) * star ω) = (1 / 3 : ℝ)
   simpa using normSq_qubit_offdiag_star_omega
 
 /-- A qubit SIC overlap using `starRingEnd` together with the explicit $\omega^2$ form. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_qubit_offdiag_star_omega_mul_explicit_omega_sq_exact :
     Complex.normSq ((1 / 3 : ℂ) +
       (tetraB : ℂ) * (starRingEnd ℂ) ω *
@@ -697,8 +697,8 @@ lemma normSq_qubit_offdiag_star_omega_mul_explicit_omega_sq_exact :
         ((tetraB : ℂ) * (-(1 / 2 : ℂ) - ((Real.sqrt 3 : ℂ) / 2) * Complex.I))) = (1 / 3 : ℝ)
   simpa using normSq_qubit_offdiag_star_omega_mul_explicit_omega_sq
 
-/-- A qubit SIC overlap written with an explicit `starRingEnd` form of $\omega$. -/
-@[simp, category API, AMS 15 47 81]
+/-- A qubit SIC overlap written with an explicit `starRingEnd` form of $\omega`. -/
+@[simp, category test, AMS 15 47 81]
 lemma normSq_qubit_offdiag_explicit_omega_exact :
     Complex.normSq ((1 / 3 : ℂ) + (2 / 3 : ℂ) *
       (-(1 : ℂ) / (starRingEnd ℂ) 2 + ((Real.sqrt 3 : ℂ) / (starRingEnd ℂ) 2) * Complex.I)) =
@@ -716,8 +716,8 @@ lemma normSq_qubit_offdiag_explicit_omega_exact :
   rw [h]
   exact normSq_qubit_offdiag_explicit_omega
 
-/-- A qubit SIC overlap with an explicit `starRingEnd` form and an extra factor of $\omega$. -/
-@[simp, category API, AMS 15 47 81]
+/-- A qubit SIC overlap with an explicit `starRingEnd` form and an extra factor of $\omega`. -/
+@[simp, category test, AMS 15 47 81]
 lemma normSq_qubit_offdiag_tetraB_explicit_omega_mul_omega_exact :
     Complex.normSq ((1 / 3 : ℂ) +
       (tetraB : ℂ) *
@@ -737,7 +737,7 @@ lemma normSq_qubit_offdiag_tetraB_explicit_omega_mul_omega_exact :
   exact normSq_qubit_offdiag_tetraB_explicit_omega_mul_omega
 
 /-- A qubit SIC overlap written with the explicit closed form for $\omega^2$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_qubit_offdiag_explicit_omega_sq :
     Complex.normSq ((1 / 3 : ℂ) + (2 / 3 : ℂ) *
       (-(1 / 2 : ℂ) - ((Real.sqrt 3 : ℂ) / 2) * Complex.I)) = (1 / 3 : ℝ) := by
@@ -745,50 +745,50 @@ lemma normSq_qubit_offdiag_explicit_omega_sq :
   simpa using normSq_qubit_offdiag_omega_sq
 
 /-- The same explicit $\omega^2$ overlap with the scalar on the left. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_qubit_offdiag_explicit_omega_sq_left :
     Complex.normSq ((1 / 3 : ℂ) +
       (-(1 / 2 : ℂ) - ((Real.sqrt 3 : ℂ) / 2) * Complex.I) * (2 / 3 : ℂ)) = (1 / 3 : ℝ) := by
   simpa [mul_comm] using normSq_qubit_offdiag_explicit_omega_sq
 
 /-- The complex norm-squared of $1/2$ is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_half : Complex.normSq ((1 / 2 : ℂ)) = (1 / 4 : ℝ) := by
   norm_num [Complex.normSq_ofReal]
 
 /-- The complex norm-squared of $-1/2$ is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_neg_half : Complex.normSq (-(1 / 2 : ℂ)) = (1 / 4 : ℝ) := by
   rw [Complex.normSq_neg]
   simpa using normSq_half
 
 /-- The complex norm-squared of $(1/2)\omega$ is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_half_mul_omega : Complex.normSq (((1 / 2 : ℂ)) * ω) = (1 / 4 : ℝ) := by
   rw [Complex.normSq_mul, omega_normSq]
   norm_num [Complex.normSq_ofReal]
 
 /-- The complex norm-squared of $(1/2)\omega^2$ is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_half_mul_omega_sq : Complex.normSq (((1 / 2 : ℂ)) * (ω ^ 2)) = (1 / 4 : ℝ) := by
   rw [Complex.normSq_mul, omega_sq_normSq]
   norm_num [Complex.normSq_ofReal]
 
 /-- The complex norm-squared of $(1/2)(1 + \omega)$ is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_half_mul_one_add_omega : Complex.normSq (((1 / 2 : ℂ)) * (1 + ω)) = (1 / 4 : ℝ) := by
   rw [Complex.normSq_mul, normSq_one_add_omega]
   norm_num [Complex.normSq_ofReal]
 
 /-- The complex norm-squared of $(1/2)(1 + \omega^2)$ is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_half_mul_one_add_omega_sq :
     Complex.normSq (((1 / 2 : ℂ)) * (1 + ω ^ 2)) = (1 / 4 : ℝ) := by
   rw [Complex.normSq_mul, normSq_one_add_omega_sq]
   norm_num [Complex.normSq_ofReal]
 
 /-- The complex norm-squared of $1/2 + (1/2)\omega$ is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_half_add_half_mul_omega :
     Complex.normSq (((1 / 2 : ℂ)) + ((1 / 2 : ℂ)) * ω) = (1 / 4 : ℝ) := by
   have h : (((1 / 2 : ℂ)) + ((1 / 2 : ℂ)) * ω) = (((1 / 2 : ℂ)) * (1 + ω)) := by
@@ -797,7 +797,7 @@ lemma normSq_half_add_half_mul_omega :
   simpa using normSq_half_mul_one_add_omega
 
 /-- The complex norm-squared of $1/2 + (1/2)\omega^2$ is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_half_add_half_mul_omega_sq :
     Complex.normSq (((1 / 2 : ℂ)) + ((1 / 2 : ℂ)) * (ω ^ 2)) = (1 / 4 : ℝ) := by
   have h : (((1 / 2 : ℂ)) + ((1 / 2 : ℂ)) * (ω ^ 2)) = (((1 / 2 : ℂ)) * (1 + ω ^ 2)) := by
@@ -806,7 +806,7 @@ lemma normSq_half_add_half_mul_omega_sq :
   simpa using normSq_half_mul_one_add_omega_sq
 
 /-- The complex norm-squared of $1/2 + (1/2)\omega^2$ in explicit form is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_half_add_half_mul_explicit_omega_sq :
     Complex.normSq (((1 / 2 : ℂ)) + ((1 / 2 : ℂ)) *
       (-(1 / 2 : ℂ) - ((Real.sqrt 3 : ℂ) / 2) * Complex.I)) = (1 / 4 : ℝ) := by
@@ -814,33 +814,33 @@ lemma normSq_half_add_half_mul_explicit_omega_sq :
   simpa using normSq_half_add_half_mul_omega_sq
 
 /-- The complex norm-squared of $(1/2)\omega^2 + 1/2$ in explicit form is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_half_mul_explicit_omega_sq_add_half :
     Complex.normSq (((1 / 2 : ℂ)) *
       (-(1 / 2 : ℂ) - ((Real.sqrt 3 : ℂ) / 2) * Complex.I) + ((1 / 2 : ℂ))) = (1 / 4 : ℝ) := by
   simpa [add_comm, mul_comm] using normSq_half_add_half_mul_explicit_omega_sq
 
 /-- The complex norm-squared of $-(1/2)\omega$ is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_neg_half_mul_omega : Complex.normSq (-(((1 / 2 : ℂ)) * ω)) = (1 / 4 : ℝ) := by
   rw [Complex.normSq_neg]
   simpa using normSq_half_mul_omega
 
 /-- The complex norm-squared of $-(1/2)\omega^2$ is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_neg_half_mul_omega_sq : Complex.normSq (-(((1 / 2 : ℂ)) * (ω ^ 2))) = (1 / 4 : ℝ) := by
   rw [Complex.normSq_neg]
   simpa using normSq_half_mul_omega_sq
 
 /-- The complex norm-squared of $-(1/2)(1 + \omega)$ is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_neg_half_mul_one_add_omega :
     Complex.normSq (-(((1 / 2 : ℂ)) * (1 + ω))) = (1 / 4 : ℝ) := by
   rw [Complex.normSq_neg]
   simpa using normSq_half_mul_one_add_omega
 
 /-- The complex norm-squared of $-(1/2)(1 + \omega^2)$ is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_neg_half_mul_one_add_omega_sq :
     Complex.normSq (-(((1 / 2 : ℂ)) * (1 + ω ^ 2))) = (1 / 4 : ℝ) := by
   rw [Complex.normSq_neg]
@@ -857,7 +857,7 @@ lemma explicit_neg_half_add_sqrt_three_half_mul_I_normSq :
   rw [h, explicit_neg_half_add_I_mul_sqrt_three_half_eq_omega]
   simp
 
-/-- An explicit `starRingEnd` form of $\omega$. -/
+/-- An explicit `starRingEnd` form of $\omega`. -/
 @[category API, AMS 15 47 81]
 lemma explicit_omega_fin_eq :
     (-(1 : ℂ) / (starRingEnd ℂ) 2 + ((Real.sqrt 3 : ℂ) / (starRingEnd ℂ) 2) * Complex.I)
@@ -870,7 +870,7 @@ lemma explicit_omega_fin_eq :
         = (-(1 / 2 : ℂ) + ((Real.sqrt 3 : ℂ) / 2) * Complex.I) by
       norm_num)
 
-/-- The explicit `starRingEnd` form of $\omega$ has norm-squared $1$. -/
+/-- The explicit `starRingEnd` form of $\omega` has norm-squared $1$. -/
 @[simp, category API, AMS 15 47 81]
 lemma explicit_omega_fin_normSq :
     Complex.normSq
@@ -879,7 +879,7 @@ lemma explicit_omega_fin_normSq :
   exact explicit_neg_half_add_sqrt_three_half_mul_I_normSq
 
 /-- The complex norm-squared of $1/2 + (1/2)\overline{\omega}$ is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_half_add_half_mul_star_omega_fin :
     Complex.normSq ((1 / 2 : ℂ) + (1 / 2 : ℂ) * (starRingEnd ℂ) ω) = (1 / 4 : ℝ) := by
   change Complex.normSq ((1 / 2 : ℂ) + (1 / 2 : ℂ) * star ω) = (1 / 4 : ℝ)
@@ -887,7 +887,7 @@ lemma normSq_half_add_half_mul_star_omega_fin :
   simpa using normSq_half_add_half_mul_omega_sq
 
 /-- A Hesse-family overlap written using `starRingEnd` and the explicit $\omega^2$ form. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_half_add_hesseS_star_omega_mul_hesseS_explicit_omega_sq_fin :
     Complex.normSq ((1 / 2 : ℂ) +
       (hesseS : ℂ) * (starRingEnd ℂ) ω *
@@ -900,19 +900,19 @@ lemma normSq_half_add_hesseS_star_omega_mul_hesseS_explicit_omega_sq_fin :
   simpa only [pow_two, hesseS_sq_complex, omega_four] using normSq_half_add_half_mul_omega
 
 /-- The complex norm-squared of $(1/2)\omega + 1/2$ is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_half_mul_omega_add_half :
     Complex.normSq (((1 / 2 : ℂ) * ω) + (1 / 2 : ℂ)) = (1 / 4 : ℝ) := by
   simpa [add_comm, mul_comm] using normSq_half_add_half_mul_omega
 
 /-- The complex norm-squared of $(1/2)\overline{\omega} + 1/2$ is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_half_mul_star_omega_add_half_fin :
     Complex.normSq (((1 / 2 : ℂ) * (starRingEnd ℂ) ω) + (1 / 2 : ℂ)) = (1 / 4 : ℝ) := by
   simpa [add_comm, mul_comm] using normSq_half_add_half_mul_star_omega_fin
 
 /-- A Hesse-family overlap written as $\overline{\omega}$ times the explicit $\omega^2$ form plus $1/2$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_hesse_star_omega_mul_hesseS_explicit_omega_sq_add_half_fin :
     Complex.normSq
       ((hesseS : ℂ) * (starRingEnd ℂ) ω *
@@ -921,7 +921,7 @@ lemma normSq_hesse_star_omega_mul_hesseS_explicit_omega_sq_add_half_fin :
   simpa [add_comm] using normSq_half_add_hesseS_star_omega_mul_hesseS_explicit_omega_sq_fin
 
 /-- The complex norm-squared of $1/2 + (1/2)\omega$ in explicit `starRingEnd` form is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_half_add_half_mul_explicit_omega_fin :
     Complex.normSq ((1 / 2 : ℂ) +
       (1 / 2 : ℂ) *
@@ -935,8 +935,8 @@ lemma normSq_half_add_half_mul_explicit_omega_fin :
   rw [h, explicit_neg_half_add_I_mul_sqrt_three_half_eq_omega]
   simpa using normSq_half_add_half_mul_omega
 
-/-- A Hesse-family overlap written using the explicit `starRingEnd` form of $\omega$. -/
-@[simp, category API, AMS 15 47 81]
+/-- A Hesse-family overlap written using the explicit `starRingEnd` form of $\omega`. -/
+@[simp, category test, AMS 15 47 81]
 lemma normSq_half_add_hesseS_explicit_omega_mul_hesseS_omega_fin :
     Complex.normSq ((1 / 2 : ℂ) +
       (hesseS : ℂ) *
@@ -952,7 +952,7 @@ lemma normSq_half_add_hesseS_explicit_omega_mul_hesseS_omega_fin :
   simpa only [pow_two, hesseS_sq_complex] using normSq_half_add_half_mul_omega_sq
 
 /-- The complex norm-squared of the explicit `starRingEnd` form of $(1/2)\omega + 1/2$ is $1/4$. -/
-@[simp, category API, AMS 15 47 81]
+@[simp, category test, AMS 15 47 81]
 lemma normSq_half_mul_explicit_omega_add_half_fin :
     Complex.normSq
       (((1 / 2 : ℂ) *
@@ -960,8 +960,8 @@ lemma normSq_half_mul_explicit_omega_add_half_fin :
         (1 / 2 : ℂ)) = (1 / 4 : ℝ) := by
   simpa [add_comm, mul_comm] using normSq_half_add_half_mul_explicit_omega_fin
 
-/-- A Hesse-family overlap written using the explicit `starRingEnd` form of $\omega$ plus $1/2$. -/
-@[simp, category API, AMS 15 47 81]
+/-- A Hesse-family overlap written using the explicit `starRingEnd` form of $\omega` plus $1/2$. -/
+@[simp, category test, AMS 15 47 81]
 lemma normSq_hesse_explicit_omega_mul_hesseS_omega_add_half_fin :
     Complex.normSq
       ((hesseS : ℂ) *
@@ -976,22 +976,6 @@ def qubitSICFamily : Fin 4 → StateVector 2
   | 2 => vec2 (tetraA : ℂ) ((tetraB : ℂ) * ω)
   | _ => vec2 (tetraA : ℂ) ((tetraB : ℂ) * (ω ^ 2))
 
-/-- The zeroth vector in the tetrahedral qubit SIC family. -/
-@[simp, category API, AMS 15 47 81]
-lemma qubitSICFamily_zero : qubitSICFamily 0 = vec2 1 0 := rfl
-
-/-- The first vector in the tetrahedral qubit SIC family. -/
-@[simp, category API, AMS 15 47 81]
-lemma qubitSICFamily_one : qubitSICFamily 1 = vec2 (tetraA : ℂ) (tetraB : ℂ) := rfl
-
-/-- The second vector in the tetrahedral qubit SIC family. -/
-@[simp, category API, AMS 15 47 81]
-lemma qubitSICFamily_two : qubitSICFamily 2 = vec2 (tetraA : ℂ) ((tetraB : ℂ) * ω) := rfl
-
-/-- The third vector in the tetrahedral qubit SIC family. -/
-@[simp, category API, AMS 15 47 81]
-lemma qubitSICFamily_three : qubitSICFamily 3 = vec2 (tetraA : ℂ) ((tetraB : ℂ) * (ω ^ 2)) := rfl
-
 /-- The Hesse qutrit SIC family. -/
 def hesseFamily : Fin 9 → StateVector 3
   | 0 => vec3 0 (hesseS : ℂ) (-(hesseS : ℂ))
@@ -1003,42 +987,6 @@ def hesseFamily : Fin 9 → StateVector 3
   | 6 => vec3 (hesseS : ℂ) (-(hesseS : ℂ)) 0
   | 7 => vec3 (hesseS : ℂ) (-((hesseS : ℂ) * ω)) 0
   | _ => vec3 (hesseS : ℂ) (-((hesseS : ℂ) * (ω ^ 2))) 0
-
-/-- The zeroth vector in the Hesse qutrit SIC family. -/
-@[simp, category API, AMS 15 47 81]
-lemma hesseFamily_zero : hesseFamily 0 = vec3 0 (hesseS : ℂ) (-(hesseS : ℂ)) := rfl
-
-/-- The first vector in the Hesse qutrit SIC family. -/
-@[simp, category API, AMS 15 47 81]
-lemma hesseFamily_one : hesseFamily 1 = vec3 0 (hesseS : ℂ) (-((hesseS : ℂ) * ω)) := rfl
-
-/-- The second vector in the Hesse qutrit SIC family. -/
-@[simp, category API, AMS 15 47 81]
-lemma hesseFamily_two : hesseFamily 2 = vec3 0 (hesseS : ℂ) (-((hesseS : ℂ) * (ω ^ 2))) := rfl
-
-/-- The third vector in the Hesse qutrit SIC family. -/
-@[simp, category API, AMS 15 47 81]
-lemma hesseFamily_three : hesseFamily 3 = vec3 (-(hesseS : ℂ)) 0 (hesseS : ℂ) := rfl
-
-/-- The fourth vector in the Hesse qutrit SIC family. -/
-@[simp, category API, AMS 15 47 81]
-lemma hesseFamily_four : hesseFamily 4 = vec3 (-((hesseS : ℂ) * ω)) 0 (hesseS : ℂ) := rfl
-
-/-- The fifth vector in the Hesse qutrit SIC family. -/
-@[simp, category API, AMS 15 47 81]
-lemma hesseFamily_five : hesseFamily 5 = vec3 (-((hesseS : ℂ) * (ω ^ 2))) 0 (hesseS : ℂ) := rfl
-
-/-- The sixth vector in the Hesse qutrit SIC family. -/
-@[simp, category API, AMS 15 47 81]
-lemma hesseFamily_six : hesseFamily 6 = vec3 (hesseS : ℂ) (-(hesseS : ℂ)) 0 := rfl
-
-/-- The seventh vector in the Hesse qutrit SIC family. -/
-@[simp, category API, AMS 15 47 81]
-lemma hesseFamily_seven : hesseFamily 7 = vec3 (hesseS : ℂ) (-((hesseS : ℂ) * ω)) 0 := rfl
-
-/-- The eighth vector in the Hesse qutrit SIC family. -/
-@[simp, category API, AMS 15 47 81]
-lemma hesseFamily_eight : hesseFamily 8 = vec3 (hesseS : ℂ) (-((hesseS : ℂ) * (ω ^ 2))) 0 := rfl
 
 /-- The BB84 family of four qubit states. -/
 def bb84Family : Fin 4 → StateVector 2
